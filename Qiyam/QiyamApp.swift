@@ -11,7 +11,7 @@ import SwiftUI
 struct QiyamApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TextSenarioView()
         }
     }
 }
