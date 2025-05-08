@@ -11,51 +11,67 @@ struct TextSenarioView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView(.vertical) {
-                ZStack {
-                    Image("allLevelsBackground")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: UIScreen.main.bounds.width)
+            GeometryReader { geo in
+                ScrollViewReader { proxy in
+                    ScrollView(.vertical, showsIndicators: false) {
+                        let imageWidth = geo.size.width
+                        let imageHeight = getImageHeight(forWidth: imageWidth)
 
-                    // ✅ Level 1 button
-                    levelButton(level: 1, x: UIScreen.main.bounds.width * 0.2, y: 150)
+                        ZStack {
+                            Image("allLevelsBackground")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: imageWidth, height: imageHeight)
 
-                    // ✅ Level 2 button
-                    levelButton(level: 2, x: UIScreen.main.bounds.width * 0.5, y: 300)
+                            // ✅ Level 10 button
+                            levelButton(level: 10, x: imageWidth * 0.3, y: imageHeight * 0.18)
 
-                    // ✅ Level 3 button
-                    levelButton(level: 3, x: UIScreen.main.bounds.width * 0.7, y: 450)
+                            // ✅ Level 9 button
+                            levelButton(level: 9, x: imageWidth * 0.7, y: imageHeight * 0.25)
 
-                    // ✅ Level 4 button
-                    levelButton(level: 4, x: UIScreen.main.bounds.width * 0.3, y: 600)
+                            // ✅ Level 8 button
+                            levelButton(level: 8, x: imageWidth * 0.3, y: imageHeight * 0.30)
 
-                    // ✅ Level 5 button
-                    levelButton(level: 5, x: UIScreen.main.bounds.width * 0.6, y: 750)
+                            // ✅ Level 7 button
+                            levelButton(level: 7, x: imageWidth * 0.7, y: imageHeight * 0.38)
 
-                    // ✅ Level 6 button
-                    levelButton(level: 6, x: UIScreen.main.bounds.width * 0.4, y: 900)
+                            // ✅ Level 6 button
+                            levelButton(level: 6, x: imageWidth * 0.3, y: imageHeight * 0.45)
 
-                    // ✅ Level 7 button
-                    levelButton(level: 7, x: UIScreen.main.bounds.width * 0.8, y: 1050)
+                            // ✅ Level 5 button
+                            levelButton(level: 5, x: imageWidth * 0.7, y: imageHeight * 0.50)
 
-                    // ✅ Level 8 button
-                    levelButton(level: 8, x: UIScreen.main.bounds.width * 0.2, y: 1200)
+                            // ✅ Level 4 button
+                            levelButton(level: 4, x: imageWidth * 0.3, y: imageHeight * 0.58)
 
-                    // ✅ Level 9 button
-                    levelButton(level: 9, x: UIScreen.main.bounds.width * 0.5, y: 1350)
+                            // ✅ Level 3 button
+                            levelButton(level: 3, x: imageWidth * 0.7, y: imageHeight * 0.66)
 
-                    // ✅ Level 10 button
-                    levelButton(level: 10, x: UIScreen.main.bounds.width * 0.7, y: 1500)
+                            // ✅ Level 2 button
+                            levelButton(level: 2, x: imageWidth * 0.3, y: imageHeight * 0.73)
+
+                            // ✅ Level 1 button + نضيف له ID عشان نقدر نتحكم فيه
+                            levelButton(level: 1, x: imageWidth * 0.7, y: imageHeight * 0.80)
+                                .id("level1")
+                        }
+                        .frame(width: imageWidth, height: imageHeight)
+                    }
+                    .scrollContentBackground(.hidden)
+                    .ignoresSafeArea(edges: .all)
+                    .onAppear {
+                        // ✅ لما الصفحة تفتح ننزل تلقائيًا إلى Level 1
+                        withAnimation {
+                            proxy.scrollTo("level1", anchor: .center)
+                        }
+                    }
                 }
-                .frame(height: 1600) // اضبطيها حسب طول الصورة الحقيقي
             }
             .background(
                 NavigationLink(
                     destination: selectedScenario.map {
                         ScenarioLevelView(scenario: $0)
-                                   .environment(\.layoutDirection, .rightToLeft) // ✅ هنا نحطها بس
-                           },
+                            .environment(\.layoutDirection, .rightToLeft)
+                    },
                     isActive: Binding<Bool>(
                         get: { selectedScenario != nil },
                         set: { if !$0 { selectedScenario = nil } }
@@ -65,6 +81,7 @@ struct TextSenarioView: View {
                 }
             )
             .navigationBarHidden(true)
+            .ignoresSafeArea()
         }
     }
 
@@ -75,18 +92,14 @@ struct TextSenarioView: View {
         }) {
             Rectangle()
                 .foregroundColor(.clear)
-                .frame(width: 80, height: 80)
-                .background(
-                    Color.blue.opacity(0.2) // ✅ عشان تجربين المكان، تقدرين تمسحينها بعدين
-                )
-                .cornerRadius(12)
-                .overlay(
-                    Text("\(level)")
-                        .foregroundColor(.white)
-                        .font(.caption)
-                        .opacity(0.8)
-                )
+                .frame(width: 140, height: 120)
         }
         .position(x: x, y: y)
+    }
+
+    func getImageHeight(forWidth width: CGFloat) -> CGFloat {
+        guard let uiImage = UIImage(named: "allLevelsBackground") else { return 0 }
+        let aspectRatio = uiImage.size.height / uiImage.size.width
+        return width * aspectRatio
     }
 }
