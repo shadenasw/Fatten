@@ -40,9 +40,9 @@
 			path = FattenTests;
 			sourceTree = "<group>";
 		};
-		AFF2281C2DCCF62A0098A252 /* QiyamUITests */ = {
+		AFF2281C2DCCF62A0098A252 /* FattenUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = QiyamUITests;
+			path = FattenUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -77,7 +77,7 @@
 			children = (
 				AFF228012DCCF6290098A252 /* Fatten */,
 				AFF228122DCCF62A0098A252 /* FattenTests */,
-				AFF2281C2DCCF62A0098A252 /* QiyamUITests */,
+				AFF2281C2DCCF62A0098A252 /* FattenUITests */,
 				AFF228002DCCF6290098A252 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -154,7 +154,7 @@
 				AFF2281B2DCCF62A0098A252 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				AFF2281C2DCCF62A0098A252 /* QiyamUITests */,
+				AFF2281C2DCCF62A0098A252 /* FattenUITests */,
 			);
 			name = FattenUITests;
 			packageProductDependencies = (
