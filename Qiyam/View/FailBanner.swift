@@ -1,19 +1,27 @@
+//
+//  FailBanner.swift
+//  Qiyam
+//
+//  Created by Lana Alyahya on 11/05/2025.
+//
+
+
 import SwiftUI
 
-struct SuccessBanner: View {
+struct FailBanner: View {
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "checkmark.circle.fill")
+            Image(systemName: "xmark.octagon.fill")
                 .resizable()
-                .foregroundColor(.green)
+                .foregroundColor(.red)
                 .frame(width: 30, height: 30)
 
             VStack(alignment: .trailing, spacing: 2) {
-                Text("أحسنت !")
+                Text("قاطعت بدري 😅")
                     .bold()
                     .foregroundColor(.black)
 
-                Text("قاطعت في اللحظة المناسبة")
+                Text("حاول تركّز أكثر في المرة الجاية.")
                     .font(.subheadline)
                     .foregroundColor(.black.opacity(0.7))
             }

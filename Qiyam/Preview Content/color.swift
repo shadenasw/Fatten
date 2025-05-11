@@ -4,13 +4,12 @@
 //
 //  Created by Lana Alyahya on 11/05/2025.
 //
-
 import SwiftUI
 
 extension Color {
     init(hex: String) {
         let scanner = Scanner(string: hex)
-        _ = scanner.scanString("#") // ignore #
+        _ = scanner.scanString("#")
         var rgb: UInt64 = 0
         scanner.scanHexInt64(&rgb)
 

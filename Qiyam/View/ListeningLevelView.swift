@@ -16,6 +16,9 @@ struct ListeningLevelView: View {
     @State private var feedbackText: String? = nil
     @State private var feedbackColor: Color = .clear
     @State private var showSuccessBanner = false
+    @State private var successPlayer: AVAudioPlayer?
+    @State private var failPlayer: AVAudioPlayer?
+    @State private var showFailBanner = false
 
     var body: some View {
         ZStack {
@@ -97,13 +100,22 @@ struct ListeningLevelView: View {
 
             // ✅ Banner
             if showSuccessBanner {
-                VStack {
-                    SuccessBanner()
-                    Spacer()
+                    VStack {
+                        SuccessBanner()
+                        Spacer()
+                    }
+                    .zIndex(1)
                 }
-                .zIndex(1)
+
+                // ✅ بانر الخطأ (تحطّه هنا)
+                if showFailBanner {
+                    VStack {
+                        FailBanner()
+                        Spacer()
+                    }
+                    .zIndex(1)
+                }
             }
-        }
         .onAppear(perform: playMainAudio)
         .onDisappear(perform: stopAudio)
     }
@@ -166,39 +178,70 @@ struct ListeningLevelView: View {
 
     func checkUserInterruption() {
         guard let current = audioPlayer?.currentTime else { return }
-
+        
         let margin: TimeInterval = 1.0
         let lower = scenario.interruptionRange.lowerBound - margin
         let upper = scenario.interruptionRange.upperBound + margin
-
         if current >= lower && current <= upper {
+            // ✅ وقت صحيح
             userInterrupted = true
             stopAudio()
             showChoices = true
-
+            
             playSuccessSound()
             triggerHapticFeedback()
-
             showSuccessBanner = true
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                 withAnimation {
                     showSuccessBanner = false
                 }
             }
+            
         } else {
-            restartAudio()
+            // ❌ وقت خاطئ
+            stopAudio()
+
+            playFailSound()
+            showFailBanner = true
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                withAnimation {
+                    showFailBanner = false
+                }
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                restartAudio()
+            }
+
+        }
+    }
+    func playFailSound() {
+        guard let path = Bundle.main.path(forResource: "fail_ping", ofType: "mp3") else {
+            print("❌ fail_ping.mp3 غير موجود")
+            return
+        }
+        do {
+            failPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
+            failPlayer?.play()
+        } catch {
+            print("❌ خطأ في تشغيل صوت الفشل:", error)
         }
     }
 
     // MARK: - تأثيرات
 
     func playSuccessSound() {
-        guard let path = Bundle.main.path(forResource: "success_ping", ofType: "mp3") else { return }
+        guard let path = Bundle.main.path(forResource: "success_ping", ofType: "mp3") else {
+            print("❌ الملف غير موجود")
+            return
+        }
         do {
-            let player = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
-            player.play()
+            successPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
+            successPlayer?.play()
         } catch {
-            print("⚠️ ما قدر يشغل صوت النجاح")
+            print("❌ خطأ في تشغيل الصوت:", error)
         }
     }
 
