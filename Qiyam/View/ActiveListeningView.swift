@@ -52,12 +52,8 @@ struct ActiveListeningView: View {
                 NavigationLink(
                     destination: Group {
                         if let scenario = selectedScenario {
-                            ListeningLevelView(
-                                title: scenario.title,
-                                mainAudio: scenario.mainAudio,
-                                interruptionRange: scenario.interruptionRange,
-                                branches: scenario.branches
-                            )
+                            ListeningLevelView(scenario: scenario)
+
                         } else {
                             EmptyView()
                         }

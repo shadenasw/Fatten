@@ -2,18 +2,20 @@ import SwiftUI
 import AVFoundation
 
 struct ListeningLevelView: View {
-    let title: String
-    let mainAudio: String
-    let interruptionRange: ClosedRange<TimeInterval>
-    let branches: [ScenarioBranch]?
+    let scenario: Scenario
 
     @Environment(\.presentationMode) var presentationMode
-    @State private var isPlaying = false
-    @State private var userInterrupted = false
-    @State private var showSuccessBanner = false
 
+    @State private var isPlaying = false
+    @State private var showChoices = false
     @State private var audioPlayer: AVAudioPlayer?
     @State private var audioTimer: Timer?
+    @State private var userInterrupted = false
+    @State private var userHasChosen = false
+
+    @State private var feedbackText: String? = nil
+    @State private var feedbackColor: Color = .clear
+    @State private var showSuccessBanner = false
 
     var body: some View {
         ZStack {
@@ -32,7 +34,7 @@ struct ListeningLevelView: View {
                     }
 
                     Spacer()
-                    Text(title)
+                    Text("المستوى \(scenario.level)")
                         .foregroundColor(.white)
                         .font(.system(size: 24, weight: .bold))
                     Spacer()
@@ -43,69 +45,60 @@ struct ListeningLevelView: View {
 
                 Spacer()
 
-                // ✅ Play / Pause button
+                // ✅ Play / Pause Button
                 Button(action: toggleAudio) {
                     Image(isPlaying ? "Open 1" : "closed")
                         .resizable()
                         .frame(width: 150, height: 150)
                 }
 
-                // ✅ User choices after correct interruption
-                if userInterrupted, let branches = branches {
+                // ✅ Choices or مقاطعة
+                if showChoices {
                     VStack(spacing: 15) {
-                        ForEach(branches.indices, id: \.self) { index in
-                            let item = branches[index]
+                        ForEach(scenario.branches.indices, id: \.self) { index in
+                            let item = scenario.branches[index]
                             BranchButton(title: item.userOption) {
-                                if let audioName = item.narratorAudio {
-                                    playBranchAudio(named: audioName)
+                                userHasChosen = true
+                                feedbackText = item.feedback
+                                switch item.feedbackType {
+                                case .correct: feedbackColor = .green
+                                case .neutral: feedbackColor = .yellow
+                                case .incorrect: feedbackColor = .red
+                                }
+
+                                if let audio = item.narratorAudio {
+                                    playBranchAudio(named: audio)
                                 }
                             }
                         }
+
+                        if userHasChosen, let feedback = feedbackText {
+                            Text(feedback)
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(feedbackColor)
+                                .cornerRadius(10)
+                                .multilineTextAlignment(.center)
+                                .transition(.opacity)
+                                .padding(.top)
+                        }
                     }
                 } else {
-                    // ✅ Interruption button
-                    Button(action: checkUserInterruption) {
-                        Text("مقاطعة")
-                            .foregroundColor(.black)
-                            .fontWeight(.bold)
-                            .frame(width: 200, height: 45)
-                            .background(Color(red: 173/255, green: 216/255, blue: 255/255))
-                            .cornerRadius(12)
-                            .shadow(color: .black.opacity(0.2), radius: 3, x: 0, y: 3)
+                    // ✅ مقاطعة
+                    VStack {
+                        BranchButton(title: "مقاطعة") {
+                            checkUserInterruption()
+                        }
                     }
                 }
 
                 Spacer()
             }
 
-            // ✅ Success banner
+            // ✅ Banner
             if showSuccessBanner {
                 VStack {
-                    HStack {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.green)
-                            .font(.system(size: 24))
-                            .padding(.leading)
-
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("أحسنت!")
-                                .fontWeight(.bold)
-                                .foregroundColor(.black)
-
-                            Text("قاطعت في اللحظة المناسبة")
-                                .foregroundColor(.black.opacity(0.7))
-                                .font(.subheadline)
-                        }
-
-                        Spacer()
-                    }
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(18)
-                    .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
-                    .padding(.horizontal)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-
+                    SuccessBanner()
                     Spacer()
                 }
                 .zIndex(1)
@@ -115,20 +108,22 @@ struct ListeningLevelView: View {
         .onDisappear(perform: stopAudio)
     }
 
-    // MARK: - Audio Logic
+    // MARK: - الصوت الأساسي
 
     func toggleAudio() {
         isPlaying ? stopAudio() : playMainAudio()
     }
 
     func playMainAudio() {
-        playAudio(named: mainAudio)
+        playAudio(named: scenario.mainAudio)
         userInterrupted = false
-        showSuccessBanner = false
+        showChoices = false
+        userHasChosen = false
+        feedbackText = nil
 
-        audioTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+        audioTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
             if let current = audioPlayer?.currentTime,
-               current > interruptionRange.upperBound,
+               current > scenario.interruptionRange.upperBound + 1,
                !userInterrupted {
                 restartAudio()
             }
@@ -142,7 +137,7 @@ struct ListeningLevelView: View {
 
     func playAudio(named name: String) {
         guard let path = Bundle.main.path(forResource: name, ofType: "mp3") else {
-            print("❌ ملف غير موجود: \(name)")
+            print("⚠️ الصوت \(name).mp3 غير موجود")
             return
         }
         do {
@@ -150,7 +145,7 @@ struct ListeningLevelView: View {
             audioPlayer?.play()
             isPlaying = true
         } catch {
-            print("❌ فشل في تشغيل الصوت: \(error)")
+            print("❌ خطأ في تشغيل الصوت:", error)
         }
     }
 
@@ -167,40 +162,48 @@ struct ListeningLevelView: View {
         }
     }
 
+    // MARK: - المقاطعة
+
     func checkUserInterruption() {
         guard let current = audioPlayer?.currentTime else { return }
 
-        if interruptionRange.contains(current) {
+        let margin: TimeInterval = 1.0
+        let lower = scenario.interruptionRange.lowerBound - margin
+        let upper = scenario.interruptionRange.upperBound + margin
+
+        if current >= lower && current <= upper {
             userInterrupted = true
             stopAudio()
+            showChoices = true
+
+            playSuccessSound()
+            triggerHapticFeedback()
+
             showSuccessBanner = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                showSuccessBanner = false
+                withAnimation {
+                    showSuccessBanner = false
+                }
             }
         } else {
             restartAudio()
         }
     }
-}
 
-// ✅ الزر
-struct BranchButton: View {
-    let title: String
-    let action: () -> Void
+    // MARK: - تأثيرات
 
-    var body: some View {
-        Button(action: action) {
-            Text(title)
-                .foregroundColor(.black)
-                .fontWeight(.bold)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-                .frame(height: 60)
-                .background(Color(red: 173/255, green: 216/255, blue: 255/255))
-                .cornerRadius(12)
-                .shadow(color: .black.opacity(0.2), radius: 3, x: 0, y: 3)
-                .padding(.horizontal, 30)
+    func playSuccessSound() {
+        guard let path = Bundle.main.path(forResource: "success_ping", ofType: "mp3") else { return }
+        do {
+            let player = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
+            player.play()
+        } catch {
+            print("⚠️ ما قدر يشغل صوت النجاح")
         }
     }
-}
 
+    func triggerHapticFeedback() {
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
+    }
+}
