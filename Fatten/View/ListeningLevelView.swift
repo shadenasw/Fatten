@@ -15,17 +15,20 @@ struct ListeningLevelView: View {
 
     @State private var feedbackText: String? = nil
     @State private var feedbackColor: Color = .clear
+
     @State private var showSuccessBanner = false
+    @State private var showFailBanner = false
+    @State private var showTimeoutBanner = false
+
     @State private var successPlayer: AVAudioPlayer?
     @State private var failPlayer: AVAudioPlayer?
-    @State private var showFailBanner = false
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
 
             VStack(spacing: 30) {
-                // ✅ Header
+                // Header
                 HStack {
                     Button(action: {
                         stopAudio()
@@ -48,21 +51,23 @@ struct ListeningLevelView: View {
 
                 Spacer()
 
-                // ✅ Play / Pause Button
+                // Play / Pause
                 Button(action: toggleAudio) {
                     Image(isPlaying ? "Open 1" : "closed")
                         .resizable()
                         .frame(width: 150, height: 150)
                 }
 
-                // ✅ Choices or مقاطعة
+                // Choices or Interruption
                 if showChoices {
                     VStack(spacing: 15) {
                         ForEach(scenario.branches.indices, id: \.self) { index in
                             let item = scenario.branches[index]
                             BranchButton(title: item.userOption) {
+                                guard !userHasChosen else { return }
                                 userHasChosen = true
                                 feedbackText = item.feedback
+                                
                                 switch item.feedbackType {
                                 case .correct: feedbackColor = .green
                                 case .neutral: feedbackColor = .yellow
@@ -73,7 +78,7 @@ struct ListeningLevelView: View {
                                     playBranchAudio(named: audio)
                                 }
                             }
-                        }
+                            .disabled(userHasChosen)  }
 
                         if userHasChosen, let feedback = feedbackText {
                             Text(feedback)
@@ -87,35 +92,29 @@ struct ListeningLevelView: View {
                         }
                     }
                 } else {
-                    // ✅ مقاطعة
-                    VStack {
-                        BranchButton(title: "مقاطعة") {
-                            checkUserInterruption()
-                        }
+                    BranchButton(title: "مقاطعة") {
+                        checkUserInterruption()
                     }
                 }
 
                 Spacer()
             }
 
-            // ✅ Banner
-            if showSuccessBanner {
-                    VStack {
-                        SuccessBanner()
-                        Spacer()
-                    }
-                    .zIndex(1)
+            // Banners (top-aligned)
+            VStack {
+                if showSuccessBanner {
+                    BannerView(type: .success)
+                } else if showFailBanner {
+                    BannerView(type: .fail)
+                } else if showTimeoutBanner {
+                    BannerView(type: .timeout)
                 }
 
-                // ✅ بانر الخطأ (تحطّه هنا)
-                if showFailBanner {
-                    VStack {
-                        FailBanner()
-                        Spacer()
-                    }
-                    .zIndex(1)
-                }
+                Spacer()
             }
+            .zIndex(2)
+            .transition(.move(edge: .top).combined(with: .opacity))
+        }
         .onAppear(perform: playMainAudio)
         .onDisappear(perform: stopAudio)
     }
@@ -134,17 +133,12 @@ struct ListeningLevelView: View {
         feedbackText = nil
 
         audioTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
-            if let current = audioPlayer?.currentTime,
-               current > scenario.interruptionRange.upperBound + 1,
-               !userInterrupted {
-                restartAudio()
+            guard let current = audioPlayer?.currentTime else { return }
+
+            if current > scenario.interruptionRange.upperBound + 1 && !userInterrupted && !showChoices {
+                triggerTimeout()
             }
         }
-    }
-
-    func playBranchAudio(named name: String) {
-        stopAudio()
-        playAudio(named: name)
     }
 
     func playAudio(named name: String) {
@@ -161,15 +155,20 @@ struct ListeningLevelView: View {
         }
     }
 
+    func playBranchAudio(named name: String) {
+        stopAudio()
+        playAudio(named: name)
+    }
+
     func stopAudio() {
         audioPlayer?.stop()
         audioTimer?.invalidate()
         isPlaying = false
     }
 
-    func restartAudio() {
+    func restartAudio(after delay: TimeInterval = 2.0) {
         stopAudio()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
             playMainAudio()
         }
     }
@@ -178,75 +177,73 @@ struct ListeningLevelView: View {
 
     func checkUserInterruption() {
         guard let current = audioPlayer?.currentTime else { return }
-        
+
         let margin: TimeInterval = 1.0
         let lower = scenario.interruptionRange.lowerBound - margin
         let upper = scenario.interruptionRange.upperBound + margin
+
         if current >= lower && current <= upper {
-            // ✅ وقت صحيح
+            // ✅ صح
             userInterrupted = true
             stopAudio()
             showChoices = true
-            
             playSuccessSound()
             triggerHapticFeedback()
-            showSuccessBanner = true
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                withAnimation {
-                    showSuccessBanner = false
-                }
-            }
-            
+            showBanner(type: .success)
         } else {
-            // ❌ وقت خاطئ
+            // ❌ خطأ
             stopAudio()
-
             playFailSound()
-            showFailBanner = true
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                withAnimation {
-                    showFailBanner = false
-                }
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                restartAudio()
-            }
-
+            showBanner(type: .fail)
+            restartAudio(after: 2.5)
         }
     }
-    func playFailSound() {
-        guard let path = Bundle.main.path(forResource: "fail_ping", ofType: "mp3") else {
-            print("❌ fail_ping.mp3 غير موجود")
-            return
-        }
-        do {
-            failPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
-            failPlayer?.play()
-        } catch {
-            print("❌ خطأ في تشغيل صوت الفشل:", error)
-        }
+
+    func triggerTimeout() {
+        stopAudio()
+        playFailSound()
+        showBanner(type: .timeout)
+        restartAudio(after: 2.5)
     }
 
     // MARK: - تأثيرات
 
     func playSuccessSound() {
-        guard let path = Bundle.main.path(forResource: "success_ping", ofType: "mp3") else {
-            print("❌ الملف غير موجود")
-            return
-        }
+        playSound(named: "success_ping", player: &successPlayer)
+    }
+
+    func playFailSound() {
+        playSound(named: "fail_ping", player: &failPlayer)
+    }
+
+    func playSound(named name: String, player: inout AVAudioPlayer?) {
+        guard let path = Bundle.main.path(forResource: name, ofType: "mp3") else { return }
         do {
-            successPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
-            successPlayer?.play()
+            player = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
+            player?.play()
         } catch {
-            print("❌ خطأ في تشغيل الصوت:", error)
+            print("❌ خطأ في الصوت \(name):", error)
         }
     }
 
     func triggerHapticFeedback() {
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
+    }
+
+    func showBanner(type: BannerType) {
+        switch type {
+        case .success: showSuccessBanner = true
+        case .fail: showFailBanner = true
+        case .timeout: showTimeoutBanner = true
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            withAnimation {
+                showSuccessBanner = false
+                showFailBanner = false
+                showTimeoutBanner = false
+            }
+        }
     }
 }

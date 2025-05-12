@@ -52,8 +52,13 @@ struct ProgressViewScreen: View {
             .padding()
             .environment(\.layoutDirection, .rightToLeft)
 
+
             BottomNavBar(currentTab: .award, progressVM: progressVM)
                 .navigationBarBackButtonHidden(true)
+
+            .ignoresSafeArea(.keyboard, edges: .bottom)
+            .navigationBarBackButtonHidden(true)
+
         }
     }
 

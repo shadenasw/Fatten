@@ -27,3 +27,6 @@ enum FeedbackType {
     case neutral
     case incorrect
 }
+enum BannerType {
+    case success, fail, timeout
+}
