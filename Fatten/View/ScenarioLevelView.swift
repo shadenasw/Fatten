@@ -1,6 +1,6 @@
 //
 //  ScenarioDetailView.swift
-//  Qiyam
+//
 //
 //  Created by shaden  on 10/11/1446 AH.
 //
@@ -9,18 +9,19 @@ import SwiftUI
 struct ScenarioLevelView: View {
     let scenario: TextScenarios
     @State private var selectedChoiceIndex: Int? = nil
+    @State private var showFeedback = false
+    @State private var feedbackMessage = ""
 
-    @Environment(\.dismiss) var dismiss // ✅ عشان نرجع تلقائيًا
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 10) {
             Text("المستوى \(scenario.level)")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
-                .padding(.top, -30)
+                .padding(.top, -5)
 
-            // ✅ Scenario Box with custom background image
             ZStack {
                 Image("scenario_box")
                     .resizable()
@@ -29,47 +30,96 @@ struct ScenarioLevelView: View {
                     .multilineTextAlignment(.center)
                     .padding(30)
             }
-            .frame(maxWidth: .infinity)
+            .frame(width: 330, height: 180)
             .padding(.horizontal)
 
-            // Image (ثابتة - ما تتغير)
-            Image("meeting_illustration")
+            Image(scenario.imageName)
                 .resizable()
                 .scaledToFit()
                 .frame(height: 200)
                 .padding(.horizontal)
 
-            // Options - شكل ثابت زي الصورة
             VStack(spacing: 15) {
                 ForEach(Array(scenario.choices.enumerated()), id: \.offset) { index, choice in
                     FixedOptionButton(
                         text: choice.text,
-                        label: optionLetter(for: index)
+                        label: optionLetter(for: index),
+                        isSelected: selectedChoiceIndex == index
                     ) {
                         selectedChoiceIndex = index
-                        // ما نسوي أي شي ثاني (لأنك ما تبي تطلع النقاط)
+                        feedbackMessage = feedback(for: choice.points)
+                        showFeedback = true
                     }
                 }
             }
             .padding(.horizontal)
-
             Spacer()
         }
         .background(Color("Background").edgesIgnoringSafeArea(.all))
-        .navigationBarBackButtonHidden(true) // ✅ نخفي الباك العادي
+        .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: {
                     dismiss()
                 }) {
                     ZStack {
                         Circle()
-                            .fill(Color.clear.opacity(0.2)) // ✅ خلفية شفافة ناعمة
+                            .fill(Color.clear.opacity(0.2))
                             .frame(width: 36, height: 36)
-
-                        Image(systemName: "chevron.backward")
+                        Image(systemName: "chevron.forward")
                             .foregroundColor(.white)
                     }
+                }
+            }
+        }
+        .overlay(
+            Group {
+                if showFeedback {
+                    feedbackOverlay
+                }
+            }
+        )
+    }
+
+    var feedbackOverlay: some View {
+        ZStack {
+            Rectangle()
+                .fill(Color.black.opacity(0.3))
+                .ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                ZStack(alignment: .topTrailing) {
+                    Image("textNotify")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 320)
+
+                    VStack(alignment: .center, spacing: 6) {
+                        if let index = selectedChoiceIndex {
+                            Text(notificationTitle(for: scenario.choices[index].points))
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(.black)
+                                .padding(.top, 45)
+
+                            Text(notificationMessage(for: scenario.level, points: scenario.choices[index].points))
+                                .font(.system(size: 14))
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.black)
+                                .padding(.horizontal, 24)
+                                .padding(.bottom, 20)
+                        }
+                    }
+                    .frame(width: 270)
+
+                    Button(action: {
+                        showFeedback = false
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundColor(.black.opacity(0.7))
+                    }
+                    .offset(x: -280, y: 4) // 🟡 اضف هذا السطر لضبط موقع الزر داخل البطاقة
+
                 }
             }
         }
@@ -83,24 +133,50 @@ struct ScenarioLevelView: View {
         default: return ""
         }
     }
+
+    func feedback(for points: Int) -> String {
+        switch points {
+        case 10:
+            return "أحسنت! اخترت أفضل إجابة.\nتم تسجيل ١٠ نقاط لتقدمك"
+        case 5:
+            return "إجابتك جيدة! لكن لا يزال هناك مجال للتطور.\nتم تسجيل ٥ نقاط لتقدمك"
+        default:
+            return "إجابة لا بأس بها! هناك خيار أفضل.\nتم تسجيل نقطة لتقدمك"
+        }
+    }
+
+    func notificationTitle(for points: Int) -> String {
+        switch points {
+        case 10: return "أحسنت!"
+        case 5: return "إجابتك جيدة!"
+        default: return "إجابة لا بأس بها!"
+        }
+    }
+
+    func notificationMessage(for level: Int, points: Int) -> String {
+        switch points {
+        case 10: return "في هذا المستوى، اخترت أفضل إجابة وعززت مهارتك.\nتم تسجيل ١٠ نقاط لتقدمك"
+        case 5: return "أظهرت وعيًا جزئيًا، لكن لا يزال هناك مجال للتطور.\nتم تسجيل ٥ نقاط لتقدمك"
+        default: return "كان هناك خيار أفضل يساعدك أكثر.\nتم تسجيل نقطة لتقدمك"
+        }
+    }
 }
 
-// ✅ Custom button with fixed design (زي اللي بالصورة)
 struct FixedOptionButton: View {
     let text: String
     let label: String
+    let isSelected: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             ZStack {
-                Image("Option")
+                Image(isSelected ? "Option_clicked" : "Option")
                     .resizable()
                     .scaledToFill()
-                    .frame(height: 110)
+                    .frame(height: 20)
 
                 HStack {
-                    Spacer()
                     Text(text)
                         .font(.system(size: 14))
                         .foregroundColor(.black)
@@ -109,16 +185,18 @@ struct FixedOptionButton: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .fixedSize(horizontal: false, vertical: true)
-                        .padding(.trailing, 75)
+                        .padding(.leading, 60)
+                        .padding(.trailing, 12)
                 }
 
                 Text(label)
                     .font(.system(size: 18, weight: .bold))
                     .frame(width: 36, height: 36)
                     .foregroundColor(.black)
-                    .padding(.leading, 300)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 12)
             }
-            .frame(height: 60)
+            .frame(height: 90)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
