@@ -7,7 +7,7 @@ import SwiftUI
 struct FattenApp: App {
     var body: some Scene {
         WindowGroup {
-            ActiveListeningView()
+            TextSenarioView()
         }
     }
 }
