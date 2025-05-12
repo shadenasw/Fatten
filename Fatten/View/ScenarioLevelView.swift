@@ -8,6 +8,8 @@ import SwiftUI
 
 struct ScenarioLevelView: View {
     let scenario: TextScenarios
+    @ObservedObject var progressVM: ProgressViewModel  // ✅ أضفناها
+
     @State private var selectedChoiceIndex: Int? = nil
     @State private var showFeedback = false
     @State private var feedbackMessage = ""
@@ -46,13 +48,17 @@ struct ScenarioLevelView: View {
                         label: optionLetter(for: index),
                         isSelected: selectedChoiceIndex == index
                     ) {
-                        selectedChoiceIndex = index
-                        feedbackMessage = feedback(for: choice.points)
-                        showFeedback = true
+                        if selectedChoiceIndex == nil { // ✅ فقط أول مرة
+                            selectedChoiceIndex = index
+                            feedbackMessage = feedback(for: choice.points)
+                            showFeedback = true
+                            progressVM.addPoints(choice.points) // ✅ هنا الإضافة
+                        }
                     }
                 }
             }
             .padding(.horizontal)
+
             Spacer()
         }
         .background(Color("Background").edgesIgnoringSafeArea(.all))
@@ -118,8 +124,7 @@ struct ScenarioLevelView: View {
                             .font(.system(size: 20, weight: .bold))
                             .foregroundColor(.black.opacity(0.7))
                     }
-                    .offset(x: -280, y: 4) // 🟡 اضف هذا السطر لضبط موقع الزر داخل البطاقة
-
+                    .offset(x: -280, y: 4)
                 }
             }
         }
@@ -202,7 +207,8 @@ struct FixedOptionButton: View {
     }
 }
 
+// ✅ Preview تم تحديثه لتمرير progressVM
 #Preview {
-    ScenarioLevelView(scenario: scenarios[0])
+    ScenarioLevelView(scenario: scenarios[0], progressVM: ProgressViewModel())
         .environment(\.layoutDirection, .rightToLeft)
 }

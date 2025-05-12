@@ -14,6 +14,7 @@ enum BottomNavTab {
 
 struct BottomNavBar: View {
     var currentTab: BottomNavTab
+    @ObservedObject var progressVM: ProgressViewModel  // ✅ أضفناها
 
     var body: some View {
         VStack {
@@ -21,7 +22,7 @@ struct BottomNavBar: View {
 
             HStack {
                 // زر الجوائز
-                NavigationLink(destination: ProgressView().navigationBarBackButtonHidden(true)) {
+                NavigationLink(destination: ProgressViewScreen(progressVM: progressVM).navigationBarBackButtonHidden(true)) {
                     Image(systemName: "rosette")
                         .resizable()
                         .scaledToFit()
@@ -55,9 +56,8 @@ struct BottomNavBar: View {
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity)
             .background(Color(.systemGray)) // غماق اللون
-            .cornerRadius(0)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
-        .frame(maxHeight: .infinity, alignment: .bottom) // ✅ لاصق تمامًا بأسفل الشاشة
+        .frame(maxHeight: .infinity, alignment: .bottom)
     }
 }

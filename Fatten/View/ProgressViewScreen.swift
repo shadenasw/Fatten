@@ -7,13 +7,15 @@
 
 import SwiftUI
 
-struct ProgressView: View {
+struct ProgressViewScreen: View {
+    @ObservedObject var progressVM: ProgressViewModel
+
     var body: some View {
         ZStack {
             Color("Background").edgesIgnoringSafeArea(.all)
 
             VStack(spacing: 30) {
-                // الترحيب
+                // العنوان والترحيب
                 VStack(spacing: 8) {
                     Text("مرحبًا، جوهرة 👋")
                         .font(.title)
@@ -26,36 +28,35 @@ struct ProgressView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding(.top, 60)
-                
-                // كرت سيناريو العمل
+
+                // سيناريو العمل
                 progressCard(
                     title: "سيناريو العمل",
-                    progress: 0.7,
-                    message: "أحسنت، أداء ممتاز !",
-                    note: "أعد المحاولة في المستوى الخامس",
-                    noteColor: .red
+                    progress: progressVM.progress,
+                    message: "جمعت \(progressVM.totalPoints) نقطة من \(progressVM.maxPoints)",
+                    note: progressVM.progress == 1.0 ? "أكملت جميع المستويات" : "استمر، تقدمك ممتاز!",
+                    noteColor: progressVM.progress == 1.0 ? .green : .yellow
                 )
-                
-                // كرت سيناريو الصوت
+
+                // سيناريو الصوت (ثابت مؤقتًا)
                 progressCard(
                     title: "سيناريو الصوت",
                     progress: 1.0,
-                    message: "أحسنت، أداء ممتاز !",
+                    message: "أحسنت، أداء ممتاز!",
                     note: "أكملت جميع المستويات",
                     noteColor: .green
                 )
-                
+
                 Spacer()
             }
             .padding()
             .environment(\.layoutDirection, .rightToLeft)
 
-            // ✅ زر الناف بار بأسفل الصفحة
-            BottomNavBar(currentTab: .award)
+            BottomNavBar(currentTab: .award, progressVM: progressVM)
                 .navigationBarBackButtonHidden(true)
         }
     }
-    
+
     func progressCard(title: String, progress: Double, message: String, note: String, noteColor: Color) -> some View {
         let progressColor = Color(red: 102/255, green: 204/255, blue: 204/255)
         
@@ -108,8 +109,4 @@ struct ProgressView: View {
         .cornerRadius(16)
         .clipped()
     }
-}
-
-#Preview {
-    ProgressView()
 }

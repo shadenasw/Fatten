@@ -3,6 +3,7 @@ import SwiftUI
 struct ActiveListeningView: View {
     @StateObject private var viewModel = ScenarioViewModel()
     @State private var selectedScenario: Scenario? = nil
+    @StateObject private var progressVM = ProgressViewModel()
 
     let completedLevels: [Int] = [1, 2, 3]
 
@@ -66,7 +67,7 @@ struct ActiveListeningView: View {
                 }
 
                 // ✅ البار السفلي ثابت
-                BottomNavBar(currentTab: .customize)
+                BottomNavBar(currentTab: .customize, progressVM: progressVM)
             }
             .navigationBarBackButtonHidden(true)
             .ignoresSafeArea(.keyboard, edges: .bottom)

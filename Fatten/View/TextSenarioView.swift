@@ -8,6 +8,7 @@ import SwiftUI
 
 struct TextSenarioView: View {
     @State private var selectedScenario: TextScenarios? = nil
+    @StateObject private var progressVM = ProgressViewModel()
 
     var body: some View {
         NavigationView {
@@ -24,17 +25,17 @@ struct TextSenarioView: View {
                                     .scaledToFit()
                                     .frame(width: imageWidth, height: imageHeight)
 
-                                // الأزرار
+                                // ✅ أزرار المستويات
                                 levelButton(level: 10, x: imageWidth * 0.3, y: imageHeight * 0.18)
-                                levelButton(level: 9, x: imageWidth * 0.7, y: imageHeight * 0.25)
-                                levelButton(level: 8, x: imageWidth * 0.3, y: imageHeight * 0.30)
-                                levelButton(level: 7, x: imageWidth * 0.7, y: imageHeight * 0.38)
-                                levelButton(level: 6, x: imageWidth * 0.3, y: imageHeight * 0.45)
-                                levelButton(level: 5, x: imageWidth * 0.7, y: imageHeight * 0.50)
-                                levelButton(level: 4, x: imageWidth * 0.3, y: imageHeight * 0.58)
-                                levelButton(level: 3, x: imageWidth * 0.7, y: imageHeight * 0.66)
-                                levelButton(level: 2, x: imageWidth * 0.3, y: imageHeight * 0.73)
-                                levelButton(level: 1, x: imageWidth * 0.7, y: imageHeight * 0.80)
+                                levelButton(level: 9,  x: imageWidth * 0.7, y: imageHeight * 0.25)
+                                levelButton(level: 8,  x: imageWidth * 0.3, y: imageHeight * 0.30)
+                                levelButton(level: 7,  x: imageWidth * 0.7, y: imageHeight * 0.38)
+                                levelButton(level: 6,  x: imageWidth * 0.3, y: imageHeight * 0.45)
+                                levelButton(level: 5,  x: imageWidth * 0.7, y: imageHeight * 0.50)
+                                levelButton(level: 4,  x: imageWidth * 0.3, y: imageHeight * 0.58)
+                                levelButton(level: 3,  x: imageWidth * 0.7, y: imageHeight * 0.66)
+                                levelButton(level: 2,  x: imageWidth * 0.3, y: imageHeight * 0.73)
+                                levelButton(level: 1,  x: imageWidth * 0.7, y: imageHeight * 0.80)
                                     .id("level1")
                             }
                             .frame(width: imageWidth, height: imageHeight)
@@ -49,14 +50,25 @@ struct TextSenarioView: View {
                     }
                 }
 
-                // ✅ نضيف الناف بار هنا
-                BottomNavBar(currentTab: .map)
+                // ✅ البار السفلي
+                BottomNavBar(currentTab: .map, progressVM: progressVM)
                     .navigationBarBackButtonHidden(true)
+
+                // ✅ شريط التقدّم العلوي
+                VStack {
+                    // الحل هنا: تأكد إنك تستخدم الشكل الصحيح 100%
+                    SwiftUI.ProgressView(value: progressVM.progress, total: 1.0)
+                        .progressViewStyle(LinearProgressViewStyle())
+                        .frame(width: 200)
+                        .padding(.top, 40)
+
+                    Spacer()
+                }
             }
             .background(
                 NavigationLink(
                     destination: selectedScenario.map {
-                        ScenarioLevelView(scenario: $0)
+                        ScenarioLevelView(scenario: $0, progressVM: progressVM)
                             .environment(\.layoutDirection, .rightToLeft)
                     },
                     isActive: Binding<Bool>(
@@ -70,7 +82,6 @@ struct TextSenarioView: View {
             .navigationBarHidden(true)
             .ignoresSafeArea()
         }
-
     }
 
     @ViewBuilder
