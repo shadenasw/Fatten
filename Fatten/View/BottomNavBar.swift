@@ -26,7 +26,7 @@ struct BottomNavBar: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 28, height: 28)
-                        .foregroundColor(currentTab == .award ? .blue : .white)
+                        .foregroundColor(currentTab == .award ? .blue : Color("TextBar"))
                 }
 
                 Spacer()
@@ -37,7 +37,7 @@ struct BottomNavBar: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 28, height: 28)
-                        .foregroundColor(currentTab == .map ? .blue : .white)
+                        .foregroundColor(currentTab == .map ? .blue : Color("TextBar"))
                 }
 
                 Spacer()
@@ -48,13 +48,13 @@ struct BottomNavBar: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 28, height: 28)
-                        .foregroundColor(currentTab == .customize ? .blue : .white)
+                        .foregroundColor(currentTab == .customize ? .blue : Color("TextBar"))
                 }
             }
             .padding(.horizontal, 40)
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity)
-            .background(Color(.systemGray)) // غماق اللون
+            .background(Color("TabBar")) // غماق اللون
             .cornerRadius(0)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)

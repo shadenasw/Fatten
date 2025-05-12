@@ -50,9 +50,12 @@ struct ProgressView: View {
             .padding()
             .environment(\.layoutDirection, .rightToLeft)
 
-            // ✅ زر الناف بار بأسفل الصفحة
-            BottomNavBar(currentTab: .award)
-                .navigationBarBackButtonHidden(true)
+            .overlay(
+                BottomNavBar(currentTab: .map),
+                alignment: .bottom
+            )
+            .ignoresSafeArea(.keyboard, edges: .bottom)
+            .navigationBarBackButtonHidden(true)
         }
     }
     
