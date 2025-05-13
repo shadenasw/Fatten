@@ -17,13 +17,13 @@ struct ProgressViewScreen: View {
             VStack(spacing: 30) {
                 // العنوان والترحيب
                 VStack(spacing: 8) {
-                    Text("مرحبًا، جوهرة 👋")
+                    Text("مرحبًا 👋")
                         .font(.title)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    Text("نتبّع تقدمك في الذكاء العاطفي")
+                    Text("تتبّع تقدمك في الذكاء العاطفي")
                         .foregroundColor(.gray)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }

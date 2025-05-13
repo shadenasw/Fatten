@@ -24,6 +24,8 @@ struct TextSenarioView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: imageWidth, height: imageHeight)
+                                
+                                
 
                                 // ✅ أزرار المستويات
                                 levelButton(level: 10, x: imageWidth * 0.3, y: imageHeight * 0.18)
@@ -54,16 +56,6 @@ struct TextSenarioView: View {
                 BottomNavBar(currentTab: .map, progressVM: progressVM)
                     .navigationBarBackButtonHidden(true)
 
-                // ✅ شريط التقدّم العلوي
-                VStack {
-                    // الحل هنا: تأكد إنك تستخدم الشكل الصحيح 100%
-                    SwiftUI.ProgressView(value: progressVM.progress, total: 1.0)
-                        .progressViewStyle(LinearProgressViewStyle())
-                        .frame(width: 200)
-                        .padding(.top, 40)
-
-                    Spacer()
-                }
             }
             .background(
                 NavigationLink(
@@ -86,12 +78,32 @@ struct TextSenarioView: View {
 
     @ViewBuilder
     func levelButton(level: Int, x: CGFloat, y: CGFloat) -> some View {
-        Button(action: {
-            selectedScenario = scenarios.first(where: { $0.level == level })
-        }) {
-            Rectangle()
-                .foregroundColor(.clear)
-                .frame(width: 140, height: 120)
+        let isUnlocked = progressVM.totalPoints >= (level - 1) * 10
+
+        ZStack {
+            // زر غير ظاهر يفتح فقط إذا unlocked
+            Button(action: {
+                if isUnlocked {
+                    selectedScenario = scenarios.first(where: { $0.level == level })
+                }
+            }) {
+                Rectangle()
+                    .foregroundColor(.clear)
+                    .frame(width: 80, height: 80)
+            }
+            .disabled(!isUnlocked)
+
+            // قفل مع تغبيش إذا مقفول
+            if !isUnlocked {
+                Circle()
+                    .fill(Color.black.opacity(0.3))
+                    .frame(width: 80, height: 80)
+                    .overlay(
+                        Image(systemName: "lock.fill")
+                            .foregroundColor(.white)
+                            .font(.system(size: 24, weight: .bold))
+                    )
+            }
         }
         .position(x: x, y: y)
     }
@@ -101,4 +113,11 @@ struct TextSenarioView: View {
         let aspectRatio = uiImage.size.height / uiImage.size.width
         return width * aspectRatio
     }
+    
+    func arabicNumber(_ num: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale(identifier: "ar")
+        return formatter.string(from: NSNumber(value: num)) ?? "\(num)"
+    }
+
 }

@@ -56,7 +56,7 @@ struct BottomNavBar: View {
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity)
 
-            .background(Color(.systemGray)) // غماق اللون
+            .background(Color("TabBar")) // غماق اللون
 
             .background(Color("TabBar")) // غماق اللون
             .cornerRadius(0)

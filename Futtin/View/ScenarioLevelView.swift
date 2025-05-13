@@ -94,7 +94,7 @@ struct ScenarioLevelView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
-                ZStack(alignment: .topTrailing) {
+                ZStack {
                     Image("textNotify")
                         .resizable()
                         .scaledToFit()
@@ -124,7 +124,7 @@ struct ScenarioLevelView: View {
                             .font(.system(size: 20, weight: .bold))
                             .foregroundColor(.black.opacity(0.7))
                     }
-                    .offset(x: -280, y: 4)
+                    .offset(x: -130, y: -100)
                 }
             }
         }
