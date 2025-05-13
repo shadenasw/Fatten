@@ -4,10 +4,19 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Fatten.xcscheme_^#shared#^_</key>
+		<key>Fatten.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+		<key>Futtin.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>isShown</key>
+			<true/>
+			<key>orderHint</key>
+			<integer>1</integer>
 		</dict>
 		<key>Qiyam.xcscheme_^#shared#^_</key>
 		<dict>
