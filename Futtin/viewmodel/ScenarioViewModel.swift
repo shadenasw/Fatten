@@ -10,7 +10,7 @@ class ScenarioViewModel: ObservableObject {
             level: 1,
             title: "الوعي الذاتي",
             mainAudio: "self_awareness_request",
-            interruptionRange: 37.0...41.5,
+            interruptionRange: 0.0...41.5,
             branches: [
                 ScenarioBranch(userOption: "تبيني أسمع أكثر؟ أعتقد فيه شي أعمق جواك.", narratorAudio: nil,
                                feedback: "يُظهر تعاطفًا ويفتح مساحة آمنة للتعبير.", feedbackType: .correct),

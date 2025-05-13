@@ -84,7 +84,6 @@ struct ListeningLevelView: View {
             }
 
             // Feedback Popup
-            // Feedback Popup
             if userHasChosen, let feedback = feedbackText {
                 ZStack {
                     Color.black.opacity(0.5)
@@ -99,30 +98,33 @@ struct ListeningLevelView: View {
                             }) {
                                 Image(systemName: "xmark")
                                     .foregroundColor(.black)
-                                    .padding()
+                                    .padding(8)
                             }
                         }
 
                         Text("أحسنت!")
-                            .font(.title)
+                            .font(.title2)
                             .bold()
                             .foregroundColor(.black)
+                            .multilineTextAlignment(.center)
 
                         Text(feedback)
                             .font(.body)
                             .foregroundColor(.black)
                             .multilineTextAlignment(.center)
-
-                        Spacer()
                     }
-                    .padding()
-                    .frame(maxWidth: 300, minHeight: 150)
+                    .padding(.top, 20)
+                    .padding(.bottom, 30)
+                    .padding(.horizontal, 20)
                     .background(Color(red: 97/255, green: 201/255, blue: 245/255))
-                    .cornerRadius(10)
+                    .cornerRadius(20)
                     .shadow(radius: 10)
+                    .padding(.horizontal, 40)
+
                 }
                 .transition(.opacity)
             }
+
 
             // Banners (top-aligned)
             VStack {
