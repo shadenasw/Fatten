@@ -10,7 +10,7 @@ class ScenarioViewModel: ObservableObject {
             level: 1,
             title: "الوعي الذاتي",
             mainAudio: "self_awareness_request",
-            interruptionRange: 19.0...22.0,
+            interruptionRange: 37.0...40.0,
             branches: [
                 ScenarioBranch(userOption: "تبيني أسمع أكثر؟ أعتقد فيه شي أعمق جواك.", narratorAudio: nil,
                                feedback: "يُظهر تعاطفًا ويفتح مساحة آمنة للتعبير.", feedbackType: .correct),
@@ -26,7 +26,7 @@ class ScenarioViewModel: ObservableObject {
             level: 2,
             title: "التعاطف",
             mainAudio: "empathy_noura",
-            interruptionRange: 20.0...23.5,
+            interruptionRange: 38.0...41.5,
             branches: [
                 ScenarioBranch(userOption: "أنا هنا أسمعك، وخذّي وقتك.", narratorAudio: nil,
                                feedback: "ردّ متعاطف جدًا، يعزز الأمان العاطفي.", feedbackType: .correct),
@@ -42,7 +42,7 @@ class ScenarioViewModel: ObservableObject {
             level: 3,
             title: "ضبط النفس",
             mainAudio: "self_control_email",
-            interruptionRange: 22.5...25.5,
+            interruptionRange: 39.5...41.5,
             branches: [
                 ScenarioBranch(userOption: "اللي سويته يحتاج شجاعة، مو ضعف.", narratorAudio: nil,
                                feedback: "يعزز الثقة في القدرة على ضبط النفس.", feedbackType: .correct),
@@ -58,7 +58,7 @@ class ScenarioViewModel: ObservableObject {
             level: 4,
             title: "استقبال النقد",
             mainAudio: "feedback_fahad",
-            interruptionRange: 25.0...28.0,
+            interruptionRange: 28.0...30.0,
             branches: [
                 ScenarioBranch(userOption: "يمكن طريقته كانت قاسية، بس فيها فرصة للتطور.", narratorAudio: nil,
                                feedback: "يعكس تقبّل بنّاء للنقد رغم الأسلوب.", feedbackType: .correct),
@@ -74,7 +74,7 @@ class ScenarioViewModel: ObservableObject {
             level: 5,
             title: "حل الخلافات – ريم",
             mainAudio: "conflict_reem",
-            interruptionRange: 20.0...23.0,
+            interruptionRange: 24.0...26.0,
             branches: [
                 ScenarioBranch(userOption: "واضح أنك حاولت توصلين شعورك بلطف.", narratorAudio: nil,
                                feedback: "يعزز أسلوب التفاهم ويقلل التصعيد.", feedbackType: .correct),

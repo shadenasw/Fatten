@@ -14,7 +14,6 @@ struct ListeningLevelView: View {
     @State private var userHasChosen = false
 
     @State private var feedbackText: String? = nil
-    @State private var feedbackColor: Color = .clear
 
     @State private var showSuccessBanner = false
     @State private var showFailBanner = false
@@ -67,28 +66,12 @@ struct ListeningLevelView: View {
                                 guard !userHasChosen else { return }
                                 userHasChosen = true
                                 feedbackText = item.feedback
-                                
-                                switch item.feedbackType {
-                                case .correct: feedbackColor = .green
-                                case .neutral: feedbackColor = .yellow
-                                case .incorrect: feedbackColor = .red
-                                }
 
                                 if let audio = item.narratorAudio {
                                     playBranchAudio(named: audio)
                                 }
                             }
-                            .disabled(userHasChosen)  }
-
-                        if userHasChosen, let feedback = feedbackText {
-                            Text(feedback)
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(feedbackColor)
-                                .cornerRadius(10)
-                                .multilineTextAlignment(.center)
-                                .transition(.opacity)
-                                .padding(.top)
+                            .disabled(userHasChosen)
                         }
                     }
                 } else {
@@ -98,6 +81,36 @@ struct ListeningLevelView: View {
                 }
 
                 Spacer()
+            }
+
+            // Feedback Popup
+            if userHasChosen, let feedback = feedbackText {
+                ZStack {
+                    Color.black.opacity(0.5)
+                        .ignoresSafeArea()
+
+                    VStack(spacing: 20) {
+                        Text("أحسنت!")
+                            .font(.title)
+                            .bold()
+                            .foregroundColor(.black)
+
+                        Text(feedback)
+                            .font(.body)
+                            .foregroundColor(.black)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding()
+                    .frame(maxWidth: 300, minHeight: 150)
+                    .background(Color.blue)
+                    .cornerRadius(20)
+                    .shadow(radius: 10)
+                    .onTapGesture {
+                        userHasChosen = false
+                        feedbackText = nil
+                    }
+                }
+                .transition(.opacity)
             }
 
             // Banners (top-aligned)
