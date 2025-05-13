@@ -10,7 +10,7 @@ import SwiftUI
 struct BranchButton: View {
     let title: String
     let action: () -> Void
-    let activeBlue = Color(hex: "#8CD1F3")
+    let activeBlue = Color("#8CD1F3")
 
     var body: some View {
         Button(action: action) {
