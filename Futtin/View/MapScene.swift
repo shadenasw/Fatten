@@ -11,7 +11,6 @@ class MapScene: SKScene {
     let mapNode = SKSpriteNode(imageNamed: "allLevelsBackground")
     let cameraNode = SKCameraNode()
     
-    // ✅ كولباك نستخدمه عشان نبلغ SwiftUI بأي مستوى يتم اختياره
     var onLevelSelected: ((Int) -> Void)?
 
     override func didMove(to view: SKView) {

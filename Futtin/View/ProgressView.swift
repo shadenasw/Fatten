@@ -1,117 +1,109 @@
-//
-//  ProgressViewScreen.swift
-//  Qiyam
-//
-//  Created by shaden  on 10/11/1446 AH.
-//
-
 import SwiftUI
 
 struct ProgressViewScreen: View {
     @ObservedObject var progressVM: ProgressViewModel
 
+    let voiceColor = Color(red: 50/255, green: 139/255, blue: 177/255)
+    let workColor = Color(red: 251/255, green: 185/255, blue: 45/255)
+    let backgroundColor = Color(red: 35/255, green: 36/255, blue: 35/255)
+
     var body: some View {
         ZStack {
-            Color("Background").edgesIgnoringSafeArea(.all)
+            backgroundColor.ignoresSafeArea()
 
-            VStack(spacing: 30) {
-                // العنوان والترحيب
-                VStack(spacing: 8) {
-                    Text("مرحبًا 👋")
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    Text("تتبّع تقدمك في الذكاء العاطفي")
-                        .foregroundColor(.gray)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(spacing: 40) {
+                HStack {
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 6) {
+                        Text("مرحباً 👋")
+                            .font(.system(size: 28, weight: .bold))
+                            .foregroundColor(.white)
+
+                        Text("تتبع تقدمك في الذكاء العاطفي")
+                            .font(.system(size: 18))
+                            .foregroundColor(.white.opacity(0.9))
+                    }
                 }
-                .padding(.top, 60)
+                .padding(.horizontal)
 
-                // سيناريو العمل
-                progressCard(
-                    title: "سيناريو العمل",
-                    progress: progressVM.progress,
-                    message: "جمعت \(progressVM.totalPoints) نقطة من \(progressVM.maxPoints)",
-                    note: progressVM.progress == 1.0 ? "أكملت جميع المستويات" : "استمر، تقدمك ممتاز!",
-                    noteColor: progressVM.progress == 1.0 ? .green : .yellow
-                )
-
-                // سيناريو الصوت (ثابت مؤقتًا)
-                progressCard(
-                    title: "سيناريو الصوت",
-                    progress: 1.0,
-                    message: "أحسنت، أداء ممتاز!",
-                    note: "أكملت جميع المستويات",
-                    noteColor: .green
-                )
-
-                Spacer()
-            }
-            .padding()
-            .environment(\.layoutDirection, .rightToLeft)
-
-
-            BottomNavBar(currentTab: .award, progressVM: progressVM)
-                .navigationBarBackButtonHidden(true)
-
-            .ignoresSafeArea(.keyboard, edges: .bottom)
-            .navigationBarBackButtonHidden(true)
-
-        }
-    }
-
-    func progressCard(title: String, progress: Double, message: String, note: String, noteColor: Color) -> some View {
-        let progressColor = Color(red: 102/255, green: 204/255, blue: 204/255)
-        
-        return VStack(alignment: .leading, spacing: 0) {
-            Text(title)
-                .font(.headline)
-                .foregroundColor(.white)
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(red: 58/255, green: 93/255, blue: 104/255))
-            
-            HStack(alignment: .center, spacing: 16) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(message)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.black)
-                    
-                    Text(note)
-                        .font(.subheadline)
-                        .foregroundColor(noteColor)
-                }
-                
-                Spacer()
-                
                 ZStack {
                     Circle()
-                        .stroke(Color.gray.opacity(0.3), lineWidth: 10)
-                        .frame(width: 110, height: 110)
-                    
+                        .stroke(voiceColor.opacity(0.2), lineWidth: 16)
+                        .frame(width: 200, height: 200)
+
                     Circle()
-                        .trim(from: 0, to: progress)
-                        .stroke(progressColor, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                        .trim(from: 0, to: 1.0)
+                        .stroke(voiceColor, style: StrokeStyle(lineWidth: 16, lineCap: .round))
+                        .frame(width: 200, height: 200)
                         .rotationEffect(.degrees(-90))
-                        .frame(width: 110, height: 110)
-                        .animation(.easeOut(duration: 0.6), value: progress)
-                    
+
                     Circle()
-                        .fill(progressColor)
-                        .frame(width: 90, height: 90)
-                    
-                    Text("\(Int(progress * 100))٪")
-                        .font(.title3)
-                        .fontWeight(.bold)
+                        .stroke(workColor.opacity(0.2), lineWidth: 10)
+                        .frame(width: 170, height: 170)
+
+                    Circle()
+                        .trim(from: 0, to: progressVM.progress)
+                        .stroke(workColor, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                        .frame(width: 170, height: 170)
+                        .rotationEffect(.degrees(-90))
+                        .animation(.easeOut(duration: 0.6), value: progressVM.progress)
+
+                    Text("\(Int(progressVM.progress * 100))%")
+                        .font(.system(size: 40, weight: .bold))
                         .foregroundColor(.white)
                 }
+
+                VStack(spacing: 20) {
+                    HStack {
+                        Text("\(Int(progressVM.progress * 100))%")
+                            .font(.system(size: 22, weight: .bold))
+                            .foregroundColor(.white)
+
+                        Spacer()
+
+                        HStack(spacing: 8) {
+                            Text("سيناريو العمل💼")
+                        }
+                        .foregroundColor(.white)
+                    }
+                    .padding()
+                    .background(workColor.opacity(0.85))
+                    .cornerRadius(14)
+                    .frame(maxWidth: 300)
+
+                    HStack {
+                        Text("100%")
+                            .font(.system(size: 22, weight: .bold))
+                            .foregroundColor(.white)
+
+                        Spacer()
+
+                        HStack(spacing: 8) {
+                            Text("سيناريو الصوت🔈")
+                        }
+                        .foregroundColor(.white)
+                    }
+                    .padding()
+                    .background(voiceColor.opacity(0.85)) // ✅ كان 3 بالغلط!
+                    .cornerRadius(14)
+                    .frame(maxWidth: 300)
+                }
+
+                Spacer()
             }
-            .padding()
-            .background(Color.white)
+            .padding(.top, 60)
+            .padding(.horizontal)
+
+            // ✅ هنا نرجّع الـ BottomNavBar
+            BottomNavBar(currentTab: .award, progressVM: progressVM)
+                .ignoresSafeArea(.keyboard, edges: .bottom)
+                .navigationBarBackButtonHidden(true)
         }
-        .cornerRadius(16)
-        .clipped()
+    }
+}
+
+struct ProgressViewScreen_Previews: PreviewProvider {
+    static var previews: some View {
+        ProgressViewScreen(progressVM: ProgressViewModel())
     }
 }
