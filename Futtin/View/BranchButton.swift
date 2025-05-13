@@ -1,34 +1,25 @@
-//
-//  BranchButton.swift
-//  Qiyam
-//
-//  Created by Lana Alyahya on 11/05/2025.
-//
-
-
 import SwiftUI
+
 struct BranchButton: View {
     let title: String
     let action: () -> Void
-    let activeBlue = Color.cut
 
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .foregroundColor(.black)
-                .fontWeight(.bold)
-                .frame(width: 280, height: 45)
-                .background(
-                    ZStack {
-                        activeBlue
-
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(activeBlue.opacity(0.5))
-                            .offset(y: 4)
-                            .blur(radius: 1)
-                    }
-                )
-                .cornerRadius(10)
+            ZStack {
+                Image("Interrupt")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 280, height: 60)
+                    .cornerRadius(10)
+                
+                Text(title)
+                    .foregroundColor(.black)
+                    .font(.system(size: 16, weight: .bold))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 16)
+            }
         }
+        .buttonStyle(PlainButtonStyle()) // يمنع أي تأثير افتراضي من SwiftUI على الزر
     }
 }

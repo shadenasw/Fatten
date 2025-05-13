@@ -45,7 +45,7 @@ struct BottomNavBar: View {
 
                 // زر التخصيص
                 NavigationLink(destination: ActiveListeningView().navigationBarBackButtonHidden(true)) {
-                    Image(systemName: "slider.horizontal.3")
+                    Image(systemName: "headphones")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 28, height: 28)

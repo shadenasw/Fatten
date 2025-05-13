@@ -26,7 +26,7 @@ class ScenarioViewModel: ObservableObject {
             level: 2,
             title: "التعاطف",
             mainAudio: "empathy",
-            interruptionRange: 38.0...41.5,
+            interruptionRange: 0.0...41.5,
             branches: [
                 ScenarioBranch(userOption: "أنا هنا أسمعك، وخذّي وقتك.", narratorAudio: nil,
                                feedback: "يظهر تعاطفا دون تقديم حل أو حكم، يعزز الأمان العاطفي.", feedbackType: .correct),
@@ -42,7 +42,7 @@ class ScenarioViewModel: ObservableObject {
             level: 3,
             title: "ضبط النفس",
             mainAudio: "Self-Regulation",
-            interruptionRange: 39.5...41.5,
+            interruptionRange: 0.0...41.5,
             branches: [
                 ScenarioBranch(userOption: "اللي سويته يحتاج شجاعة، مو ضعف.", narratorAudio: nil,
                                feedback: "يعزز الثقة في القدرة على ضبط النفس.", feedbackType: .correct),
@@ -58,7 +58,7 @@ class ScenarioViewModel: ObservableObject {
             level: 4,
             title: "استقبال النقد",
             mainAudio: "Receiving Feedback",
-            interruptionRange: 28.0...30.0,
+            interruptionRange: 0.0...30.0,
             branches: [
                 ScenarioBranch(userOption: "يمكن طريقته كانت قاسية، بس فيها فرصة للتطور.", narratorAudio: nil,
                                feedback: " يُظهر توازن بين الاحتواء والتوجيه", feedbackType: .correct),
@@ -74,7 +74,7 @@ class ScenarioViewModel: ObservableObject {
             level: 5,
             title: "حل الخلافات",
             mainAudio: "Conflict Resolution",
-            interruptionRange: 24.0...26.0,
+            interruptionRange: 0.0...26.0,
             branches: [
                 ScenarioBranch(userOption: "واضح أنك حاولت توصلين شعورك بلطف.", narratorAudio: nil,
                                feedback: "يعزز أسلوب التفاهم ويقلل التصعيد.", feedbackType: .correct),
@@ -120,7 +120,7 @@ class ScenarioViewModel: ObservableObject {
         // -------------------- المستوى 8 --------------------
         Scenario(
             level: 8,
-            title: "بناء الثقة – راجو",
+            title: "بناء الثقة ",
             mainAudio: "trust_respect_raju",
             interruptionRange: 42.0...44.0,
             branches: [
@@ -136,7 +136,7 @@ class ScenarioViewModel: ObservableObject {
         // -------------------- المستوى 9 --------------------
         Scenario(
             level: 9,
-            title: "التحفيز الذاتي – فارس",
+            title: "التحفيز الذاتي ",
             mainAudio: "self_motivation_fares",
             interruptionRange: 38.0...41.0,
             branches: [
