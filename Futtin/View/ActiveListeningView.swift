@@ -10,7 +10,7 @@ struct ActiveListeningView: View {
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
-                Color.black.ignoresSafeArea()
+                Color("Background").ignoresSafeArea()
 
                 ScrollView(.vertical) {
                     VStack(spacing: 0) {

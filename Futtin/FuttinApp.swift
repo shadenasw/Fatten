@@ -4,7 +4,7 @@
 import SwiftUI
 
 @main
-struct FattenApp: App {
+struct FuttinApp: App {
     var body: some Scene {
         WindowGroup {
             TextSenarioView()

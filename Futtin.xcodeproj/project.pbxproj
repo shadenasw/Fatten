@@ -24,25 +24,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		AFF227FF2DCCF6290098A252 /* Fatten.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fatten.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AFF2280F2DCCF62A0098A252 /* FattenTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FattenTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AFF228192DCCF62A0098A252 /* FattenUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FattenUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AFF227FF2DCCF6290098A252 /* Futtin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Futtin.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AFF2280F2DCCF62A0098A252 /* FuttinTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FuttinTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AFF228192DCCF62A0098A252 /* FuttinUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FuttinUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		AFF228012DCCF6290098A252 /* Fatten */ = {
+		AFF228012DCCF6290098A252 /* Futtin */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Fatten;
+			path = Futtin;
 			sourceTree = "<group>";
 		};
-		AFF228122DCCF62A0098A252 /* FattenTests */ = {
+		AFF228122DCCF62A0098A252 /* FuttinTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FattenTests;
+			path = FuttinTests;
 			sourceTree = "<group>";
 		};
-		AFF2281C2DCCF62A0098A252 /* FattenUITests */ = {
+		AFF2281C2DCCF62A0098A252 /* FuttinUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FattenUITests;
+			path = FuttinUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -75,9 +75,9 @@
 		AFF227F62DCCF6290098A252 = {
 			isa = PBXGroup;
 			children = (
-				AFF228012DCCF6290098A252 /* Fatten */,
-				AFF228122DCCF62A0098A252 /* FattenTests */,
-				AFF2281C2DCCF62A0098A252 /* FattenUITests */,
+				AFF228012DCCF6290098A252 /* Futtin */,
+				AFF228122DCCF62A0098A252 /* FuttinTests */,
+				AFF2281C2DCCF62A0098A252 /* FuttinUITests */,
 				AFF228002DCCF6290098A252 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,9 +85,9 @@
 		AFF228002DCCF6290098A252 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AFF227FF2DCCF6290098A252 /* Fatten.app */,
-				AFF2280F2DCCF62A0098A252 /* FattenTests.xctest */,
-				AFF228192DCCF62A0098A252 /* FattenUITests.xctest */,
+				AFF227FF2DCCF6290098A252 /* Futtin.app */,
+				AFF2280F2DCCF62A0098A252 /* FuttinTests.xctest */,
+				AFF228192DCCF62A0098A252 /* FuttinUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AFF227FE2DCCF6290098A252 /* Fatten */ = {
+		AFF227FE2DCCF6290098A252 /* Futtin */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AFF228232DCCF62A0098A252 /* Build configuration list for PBXNativeTarget "Fatten" */;
+			buildConfigurationList = AFF228232DCCF62A0098A252 /* Build configuration list for PBXNativeTarget "Futtin" */;
 			buildPhases = (
 				AFF227FB2DCCF6290098A252 /* Sources */,
 				AFF227FC2DCCF6290098A252 /* Frameworks */,
@@ -108,18 +108,18 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				AFF228012DCCF6290098A252 /* Fatten */,
+				AFF228012DCCF6290098A252 /* Futtin */,
 			);
-			name = Fatten;
+			name = Futtin;
 			packageProductDependencies = (
 			);
 			productName = Qiyam;
-			productReference = AFF227FF2DCCF6290098A252 /* Fatten.app */;
+			productReference = AFF227FF2DCCF6290098A252 /* Futtin.app */;
 			productType = "com.apple.product-type.application";
 		};
-		AFF2280E2DCCF62A0098A252 /* FattenTests */ = {
+		AFF2280E2DCCF62A0098A252 /* FuttinTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AFF228262DCCF62A0098A252 /* Build configuration list for PBXNativeTarget "FattenTests" */;
+			buildConfigurationList = AFF228262DCCF62A0098A252 /* Build configuration list for PBXNativeTarget "FuttinTests" */;
 			buildPhases = (
 				AFF2280B2DCCF62A0098A252 /* Sources */,
 				AFF2280C2DCCF62A0098A252 /* Frameworks */,
@@ -131,18 +131,18 @@
 				AFF228112DCCF62A0098A252 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				AFF228122DCCF62A0098A252 /* FattenTests */,
+				AFF228122DCCF62A0098A252 /* FuttinTests */,
 			);
-			name = FattenTests;
+			name = FuttinTests;
 			packageProductDependencies = (
 			);
 			productName = QiyamTests;
-			productReference = AFF2280F2DCCF62A0098A252 /* FattenTests.xctest */;
+			productReference = AFF2280F2DCCF62A0098A252 /* FuttinTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		AFF228182DCCF62A0098A252 /* FattenUITests */ = {
+		AFF228182DCCF62A0098A252 /* FuttinUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AFF228292DCCF62A0098A252 /* Build configuration list for PBXNativeTarget "FattenUITests" */;
+			buildConfigurationList = AFF228292DCCF62A0098A252 /* Build configuration list for PBXNativeTarget "FuttinUITests" */;
 			buildPhases = (
 				AFF228152DCCF62A0098A252 /* Sources */,
 				AFF228162DCCF62A0098A252 /* Frameworks */,
@@ -154,13 +154,13 @@
 				AFF2281B2DCCF62A0098A252 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				AFF2281C2DCCF62A0098A252 /* FattenUITests */,
+				AFF2281C2DCCF62A0098A252 /* FuttinUITests */,
 			);
-			name = FattenUITests;
+			name = FuttinUITests;
 			packageProductDependencies = (
 			);
 			productName = QiyamUITests;
-			productReference = AFF228192DCCF62A0098A252 /* FattenUITests.xctest */;
+			productReference = AFF228192DCCF62A0098A252 /* FuttinUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -186,7 +186,7 @@
 					};
 				};
 			};
-			buildConfigurationList = AFF227FA2DCCF6290098A252 /* Build configuration list for PBXProject "Fatten" */;
+			buildConfigurationList = AFF227FA2DCCF6290098A252 /* Build configuration list for PBXProject "Futtin" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -200,9 +200,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AFF227FE2DCCF6290098A252 /* Fatten */,
-				AFF2280E2DCCF62A0098A252 /* FattenTests */,
-				AFF228182DCCF62A0098A252 /* FattenUITests */,
+				AFF227FE2DCCF6290098A252 /* Futtin */,
+				AFF2280E2DCCF62A0098A252 /* FuttinTests */,
+				AFF228182DCCF62A0098A252 /* FuttinUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -258,12 +258,12 @@
 /* Begin PBXTargetDependency section */
 		AFF228112DCCF62A0098A252 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AFF227FE2DCCF6290098A252 /* Fatten */;
+			target = AFF227FE2DCCF6290098A252 /* Futtin */;
 			targetProxy = AFF228102DCCF62A0098A252 /* PBXContainerItemProxy */;
 		};
 		AFF2281B2DCCF62A0098A252 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AFF227FE2DCCF6290098A252 /* Fatten */;
+			target = AFF227FE2DCCF6290098A252 /* Futtin */;
 			targetProxy = AFF2281A2DCCF62A0098A252 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -395,8 +395,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Fatten/Preview Content\"";
-				DEVELOPMENT_TEAM = 4DZ3GY9R6K;
+				DEVELOPMENT_ASSET_PATHS = "\"Futtin/Preview Content\"";
+				DEVELOPMENT_TEAM = 8F9CB8ABM7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -424,8 +424,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Fatten/Preview Content\"";
-				DEVELOPMENT_TEAM = 4DZ3GY9R6K;
+				DEVELOPMENT_ASSET_PATHS = "\"Futtin/Preview Content\"";
+				DEVELOPMENT_TEAM = 8F9CB8ABM7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -461,7 +461,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fatten.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Fatten";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Futtin.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Futtin";
 			};
 			name = Debug;
 		};
@@ -480,7 +480,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fatten.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Fatten";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Futtin.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Futtin";
 			};
 			name = Release;
 		};
@@ -521,7 +521,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AFF227FA2DCCF6290098A252 /* Build configuration list for PBXProject "Fatten" */ = {
+		AFF227FA2DCCF6290098A252 /* Build configuration list for PBXProject "Futtin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AFF228212DCCF62A0098A252 /* Debug */,
@@ -530,7 +530,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AFF228232DCCF62A0098A252 /* Build configuration list for PBXNativeTarget "Fatten" */ = {
+		AFF228232DCCF62A0098A252 /* Build configuration list for PBXNativeTarget "Futtin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AFF228242DCCF62A0098A252 /* Debug */,
@@ -539,7 +539,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AFF228262DCCF62A0098A252 /* Build configuration list for PBXNativeTarget "FattenTests" */ = {
+		AFF228262DCCF62A0098A252 /* Build configuration list for PBXNativeTarget "FuttinTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AFF228272DCCF62A0098A252 /* Debug */,
@@ -548,7 +548,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AFF228292DCCF62A0098A252 /* Build configuration list for PBXNativeTarget "FattenUITests" */ = {
+		AFF228292DCCF62A0098A252 /* Build configuration list for PBXNativeTarget "FuttinUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AFF2282A2DCCF62A0098A252 /* Debug */,

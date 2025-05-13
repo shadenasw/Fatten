@@ -7,7 +7,7 @@
 
 import XCTest
 
-final class FattenUITestsLaunchTests: XCTestCase {
+final class FuttinUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
