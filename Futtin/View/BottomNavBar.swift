@@ -14,8 +14,7 @@ enum BottomNavTab {
 
 struct BottomNavBar: View {
     var currentTab: BottomNavTab
-    @ObservedObject var progressVM: ProgressViewModel  // ✅ أضفناها
-
+    @ObservedObject var progressVM: ProgressViewModel  // ✅
     var body: some View {
         VStack {
             Spacer()
@@ -43,7 +42,7 @@ struct BottomNavBar: View {
 
                 Spacer()
 
-                // زر التخصيص
+                //زر الصوت مفروض يتغير
                 NavigationLink(destination: ActiveListeningView().navigationBarBackButtonHidden(true)) {
                     Image(systemName: "slider.horizontal.3")
                         .resizable()
@@ -56,9 +55,9 @@ struct BottomNavBar: View {
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity)
 
-            .background(Color("TabBar")) // غماق اللون
+            .background(Color("TabBar"))
 
-            .background(Color("TabBar")) // غماق اللون
+            .background(Color("TabBar"))  
             .cornerRadius(0)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
