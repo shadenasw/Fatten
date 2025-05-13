@@ -84,12 +84,25 @@ struct ListeningLevelView: View {
             }
 
             // Feedback Popup
+            // Feedback Popup
             if userHasChosen, let feedback = feedbackText {
                 ZStack {
                     Color.black.opacity(0.5)
                         .ignoresSafeArea()
 
                     VStack(spacing: 20) {
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                userHasChosen = false
+                                feedbackText = nil
+                            }) {
+                                Image(systemName: "xmark")
+                                    .foregroundColor(.black)
+                                    .padding()
+                            }
+                        }
+
                         Text("أحسنت!")
                             .font(.title)
                             .bold()
@@ -99,16 +112,14 @@ struct ListeningLevelView: View {
                             .font(.body)
                             .foregroundColor(.black)
                             .multilineTextAlignment(.center)
+
+                        Spacer()
                     }
                     .padding()
                     .frame(maxWidth: 300, minHeight: 150)
-                    .background(Color.blue)
-                    .cornerRadius(20)
+                    .background(Color(red: 97/255, green: 201/255, blue: 245/255))
+                    .cornerRadius(10)
                     .shadow(radius: 10)
-                    .onTapGesture {
-                        userHasChosen = false
-                        feedbackText = nil
-                    }
                 }
                 .transition(.opacity)
             }

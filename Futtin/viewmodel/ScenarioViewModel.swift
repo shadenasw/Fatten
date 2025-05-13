@@ -10,7 +10,7 @@ class ScenarioViewModel: ObservableObject {
             level: 1,
             title: "الوعي الذاتي",
             mainAudio: "self_awareness_request",
-            interruptionRange: 37.0...40.0,
+            interruptionRange: 37.0...41.5,
             branches: [
                 ScenarioBranch(userOption: "تبيني أسمع أكثر؟ أعتقد فيه شي أعمق جواك.", narratorAudio: nil,
                                feedback: "يُظهر تعاطفًا ويفتح مساحة آمنة للتعبير.", feedbackType: .correct),
@@ -25,15 +25,15 @@ class ScenarioViewModel: ObservableObject {
         Scenario(
             level: 2,
             title: "التعاطف",
-            mainAudio: "empathy_noura",
+            mainAudio: "empathy",
             interruptionRange: 38.0...41.5,
             branches: [
                 ScenarioBranch(userOption: "أنا هنا أسمعك، وخذّي وقتك.", narratorAudio: nil,
-                               feedback: "ردّ متعاطف جدًا، يعزز الأمان العاطفي.", feedbackType: .correct),
+                               feedback: "يظهر تعاطفا دون تقديم حل أو حكم، يعزز الأمان العاطفي.", feedbackType: .correct),
                 ScenarioBranch(userOption: "أعتقد المشكلة في زميلك، مو فيك.", narratorAudio: nil,
-                               feedback: "يلوم طرف ثالث ويغلق باب التعبير.", feedbackType: .neutral),
+                               feedback: "يغلق باب التعبير ويحوّل الحديث للوم..", feedbackType: .neutral),
                 ScenarioBranch(userOption: "انتي حساسة بزيادة، يمكن ما كان يقصد.", narratorAudio: nil,
-                               feedback: "فيه حكم سلبي وقد يضعف الثقة.", feedbackType: .incorrect)
+                               feedback: "يحمل حكم سلبي وقد يضعف الثقة.", feedbackType: .incorrect)
             ]
         ),
 
@@ -41,7 +41,7 @@ class ScenarioViewModel: ObservableObject {
         Scenario(
             level: 3,
             title: "ضبط النفس",
-            mainAudio: "self_control_email",
+            mainAudio: "Self-Regulation",
             interruptionRange: 39.5...41.5,
             branches: [
                 ScenarioBranch(userOption: "اللي سويته يحتاج شجاعة، مو ضعف.", narratorAudio: nil,
@@ -57,13 +57,13 @@ class ScenarioViewModel: ObservableObject {
         Scenario(
             level: 4,
             title: "استقبال النقد",
-            mainAudio: "feedback_fahad",
+            mainAudio: "Receiving Feedback",
             interruptionRange: 28.0...30.0,
             branches: [
                 ScenarioBranch(userOption: "يمكن طريقته كانت قاسية، بس فيها فرصة للتطور.", narratorAudio: nil,
-                               feedback: "يعكس تقبّل بنّاء للنقد رغم الأسلوب.", feedbackType: .correct),
+                               feedback: " يُظهر توازن بين الاحتواء والتوجيه", feedbackType: .correct),
                 ScenarioBranch(userOption: "لا تسمع له، مدراؤنا دايم ينتقدون.", narratorAudio: nil,
-                               feedback: "يدعم الدفاعية ويقلل فرصة النمو.", feedbackType: .incorrect),
+                               feedback: "يدعم الدفاعية يغلق باب التطوير", feedbackType: .incorrect),
                 ScenarioBranch(userOption: "عادي، كلنا ننهان أحيان.", narratorAudio: nil,
                                feedback: "يطبع الإهانة وقد يضعف الوعي بالحقوق.", feedbackType: .neutral)
             ]
@@ -72,8 +72,8 @@ class ScenarioViewModel: ObservableObject {
         // -------------------- المستوى 5 --------------------
         Scenario(
             level: 5,
-            title: "حل الخلافات – ريم",
-            mainAudio: "conflict_reem",
+            title: "حل الخلافات",
+            mainAudio: "Conflict Resolution",
             interruptionRange: 24.0...26.0,
             branches: [
                 ScenarioBranch(userOption: "واضح أنك حاولت توصلين شعورك بلطف.", narratorAudio: nil,

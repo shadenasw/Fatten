@@ -10,7 +10,7 @@ import SwiftUI
 struct BranchButton: View {
     let title: String
     let action: () -> Void
-    let activeBlue = Color.white
+    let activeBlue = Color.cut
 
     var body: some View {
         Button(action: action) {
