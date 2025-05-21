@@ -26,7 +26,7 @@ struct ListeningLevelView: View {
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            
+                .navigationBarBackButtonHidden(true)
             VStack(spacing: 30) {
                 HStack {
                     Button(action: {
@@ -109,7 +109,7 @@ struct ListeningLevelView: View {
                             }
                             .disabled(userHasChosen)
                             .padding(.horizontal, 30)
-                        }
+                        } 
                     }
                 } else {
                     Button(action: checkUserInterruption) {
@@ -174,7 +174,7 @@ struct ListeningLevelView: View {
                     }
                 }
                 .transition(.opacity)
-            }
+            } 
 
             VStack {
                 if showSuccessBanner {
