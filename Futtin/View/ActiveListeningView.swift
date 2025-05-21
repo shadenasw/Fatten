@@ -17,9 +17,9 @@ struct ActiveListeningView: View {
 
                 ScrollViewReader { scrollProxy in
                     ScrollView(.vertical) {
-                        VStack(spacing: 0) {
+                        VStack(spacing: 6) {
                             ForEach((1...10).reversed(), id: \.self) { level in
-                                VStack(spacing: 4) {
+                                VStack(spacing: 10) {
                                     Button(action: {
                                         if let scenario = viewModel.scenario(for: level) {
                                             selectedScenario = scenario
@@ -37,7 +37,7 @@ struct ActiveListeningView: View {
                                     .disabled(!canAccess(level: level))
                                     .id(level)
 
-                                    if level != 10 && level != 1 {
+                                    if level != 1 {
                                         Image(lineImageName(for: level))
                                             .resizable()
                                             .frame(width: 6, height: 28)
