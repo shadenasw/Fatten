@@ -177,12 +177,12 @@ struct ListeningLevelView: View {
                 if activeBanner != nil {
                     ZStack(alignment: .top) {
                         // 🟦 تغميق خفيف للمحتوى خلف الإشعار فقط
-                        if let banner = activeBanner {
-                            BannerView(type: banner)
-                                .transition(.move(edge: .top).combined(with: .opacity))
-                                .zIndex(2)
-                        }
+                        Color.black.opacity(0.60)
+                            .frame(height: 100) // غطي فقط خلف الإشعار
+                            .blur(radius: 3)
 
+                        // 🟨 الإشعار نفسه
+                        BannerView(type: activeBanner!)
                     }
                     .transition(.move(edge: .top).combined(with: .opacity))
                 }
@@ -201,23 +201,36 @@ struct ListeningLevelView: View {
     }
 
     func playMainAudio() {
-        stopAudio() // ✅ أوقف كل شيء أول
+        stopAudio() // تأكد نوقف أي صوت سابق
 
-        playAudio(named: scenario.mainAudio) // ✅ إعادة التشغيل من البداية
+        playAudio(named: scenario.mainAudio)
 
-        // ✅ إعادة تهيئة المؤقت وكل الحالات
         userInterrupted = false
         showChoices = false
         userHasChosen = false
         feedbackText = nil
         activeBanner = nil
 
+        // نوقف التايمر القديم (لو موجود)
         audioTimer?.invalidate()
+
+        // نراقب وقت الصوت للتصرف وقت المقاطعة (اختياري)
         audioTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
             guard let current = audioPlayer?.currentTime else { return }
 
-            if current > scenario.interruptionRange.upperBound + 2 &&
-               !userInterrupted && !showChoices {
+            // إلغاء التايمر مباشرة لو قاطع
+            if userInterrupted {
+                audioTimer?.invalidate()
+            }
+        }
+
+        // 🔁 حساب مدة الصوت + التأخير بعده
+        let totalDuration = audioPlayer?.duration ?? 0
+        let delayAfterEnd: TimeInterval = 5.0
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + totalDuration + delayAfterEnd) {
+            // ما قاطع، ما اختار، وما ظهرت خيارات؟ اعرض timeout
+            if !userInterrupted && !showChoices && !userHasChosen {
                 triggerTimeout()
             }
         }

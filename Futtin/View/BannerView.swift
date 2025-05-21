@@ -31,16 +31,13 @@ struct BannerView: View {
             Spacer()
         }
         .padding()
-        .background(
-            Color(hex: "#2C2E2C")
-                .opacity(0.85)
-                .background(.ultraThinMaterial)
-        )
- // ✨ يعطيك تأثير زجاجي مودرن
-        .cornerRadius(24) // حواف ناعمة أكثر
-        .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 5) // ظل واضح
-        .padding(.horizontal, 16)
-        .padding(.top, 20) // تنزله شوي من أعلى الشاشة
+        .background(Color(hex: "#2C2E2C").opacity(0.8))
+        .cornerRadius(20)
+        .shadow(radius: 5)
+        .padding(.horizontal)
+        .padding(.top, 12)
+
         .transition(.move(edge: .top).combined(with: .opacity))
+        .animation(.easeInOut(duration: 0.3), value: type)
     }
 }
