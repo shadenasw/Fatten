@@ -1,10 +1,3 @@
-//
-//  Scenario.swift
-//  Qiyam
-//
-//  Created by Lana Alyahya on 11/05/2025.
-//
-
 import Foundation
 
 struct Scenario {
@@ -26,7 +19,4 @@ enum FeedbackType {
     case correct
     case neutral
     case incorrect
-}
-enum BannerType {
-    case success, fail, timeout
 }

@@ -10,7 +10,7 @@ class ScenarioViewModel: ObservableObject {
             level: 1,
             title: "الوعي الذاتي",
             mainAudio: "self_awareness_request",
-            interruptionRange: 36.0...41.5,
+            interruptionRange: 33.0...35.5,
             branches: [
                 ScenarioBranch(userOption: "تبيني أسمع أكثر؟ أعتقد فيه شي أعمق جواك.", narratorAudio: nil,
                                feedback: "يُظهر تعاطفًا ويفتح مساحة آمنة للتعبير.", feedbackType: .correct),
@@ -26,7 +26,7 @@ class ScenarioViewModel: ObservableObject {
             level: 2,
             title: "التعاطف",
             mainAudio: "empathy",
-            interruptionRange: 36.0...41.5,
+            interruptionRange: 36.0...38,
             branches: [
                 ScenarioBranch(userOption: "أنا هنا أسمعك، وخذّي وقتك.", narratorAudio: nil,
                                feedback: "يظهر تعاطفا دون تقديم حل أو حكم، يعزز الأمان العاطفي.", feedbackType: .correct),
@@ -42,7 +42,7 @@ class ScenarioViewModel: ObservableObject {
             level: 3,
             title: "ضبط النفس",
             mainAudio: "Self-Regulation",
-            interruptionRange: 36.0...41.5,
+            interruptionRange: 36.0...38,
             branches: [
                 ScenarioBranch(userOption: "اللي سويته يحتاج شجاعة، مو ضعف.", narratorAudio: nil,
                                feedback: "يعزز الثقة في القدرة على ضبط النفس.", feedbackType: .correct),
