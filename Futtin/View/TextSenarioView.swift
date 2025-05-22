@@ -1,18 +1,19 @@
-//
-//  TextSenarioView.swift
-//  Qiyam
-//
-//  Created by shaden  on 10/11/1446 AH.
-//
 import SwiftUI
 
 struct TextSenarioView: View {
     @State private var selectedScenario: TextScenarios? = nil
-    @StateObject private var progressVM = ProgressViewModel()
+    @ObservedObject var progressVM: ProgressViewModel
+
+    var currentTab: BottomNavTab
+    var onTabSelected: (BottomNavTab) -> Void
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
+                // 🔹 الخلفية
+                Color("Background").ignoresSafeArea()
+
+                // 🔹 الصورة والمحتوى
                 GeometryReader { geo in
                     ScrollViewReader { proxy in
                         ScrollView(.vertical, showsIndicators: false) {
@@ -24,26 +25,18 @@ struct TextSenarioView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: imageWidth, height: imageHeight)
-                                
-                                
 
-                                // ✅ أزرار المستويات
-                                levelButton(level: 10, x: imageWidth * 0.3, y: imageHeight * 0.18)
-                                levelButton(level: 9,  x: imageWidth * 0.7, y: imageHeight * 0.25)
-                                levelButton(level: 8,  x: imageWidth * 0.3, y: imageHeight * 0.30)
-                                levelButton(level: 7,  x: imageWidth * 0.7, y: imageHeight * 0.38)
-                                levelButton(level: 6,  x: imageWidth * 0.3, y: imageHeight * 0.45)
-                                levelButton(level: 5,  x: imageWidth * 0.7, y: imageHeight * 0.50)
-                                levelButton(level: 4,  x: imageWidth * 0.3, y: imageHeight * 0.58)
-                                levelButton(level: 3,  x: imageWidth * 0.7, y: imageHeight * 0.66)
-                                levelButton(level: 2,  x: imageWidth * 0.3, y: imageHeight * 0.73)
-                                levelButton(level: 1,  x: imageWidth * 0.7, y: imageHeight * 0.80)
-                                    .id("level1")
+                                // ✅ أزرار المراحل
+                                ForEach(1...10, id: \.self) { level in
+                                    let x = level % 2 == 0 ? imageWidth * 0.3 : imageWidth * 0.7
+                                    let y = imageHeight * (0.18 + 0.07 * Double(10 - level))
+                                    levelButton(level: level, x: x, y: y)
+                                }
+                                .padding(.bottom, 70)
                             }
                             .frame(width: imageWidth, height: imageHeight)
                         }
                         .scrollContentBackground(.hidden)
-                        .ignoresSafeArea(edges: .all)
                         .onAppear {
                             withAnimation {
                                 proxy.scrollTo("level1", anchor: .center)
@@ -51,12 +44,29 @@ struct TextSenarioView: View {
                         }
                     }
                 }
+                VStack {
+                    Spacer()
+                    // 🔹 شريط التنقل السفلي ثابت دائمًا فوق كل شيء
+                    BottomNavBar(
+                        currentTab: currentTab,
+                        progressVM: progressVM,
+                        onTabSelected: onTabSelected
+                    )
+                    .frame(height: 70)
+                    .frame(maxWidth: .infinity)
+                    .background(Color("TabBar"))
+                    .zIndex(1)
 
-                // ✅ البار السفلي
-                BottomNavBar(currentTab: .map, progressVM: progressVM)
-                    .navigationBarBackButtonHidden(true)
+            
+                }
+                .ignoresSafeArea(.keyboard, edges: .bottom)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom) // ✅ يخلي البار يثبت تمامًا
 
+
+                // 🔹 شريط التنقل السفلي مثبت دائمًا فوق كل شيء
+              
             }
+
             .background(
                 NavigationLink(
                     destination: selectedScenario.map {
@@ -71,9 +81,10 @@ struct TextSenarioView: View {
                     EmptyView()
                 }
             )
-            .navigationBarHidden(true)
+            .navigationBarBackButtonHidden(true)
             .ignoresSafeArea()
         }
+
     }
 
     @ViewBuilder
@@ -81,7 +92,6 @@ struct TextSenarioView: View {
         let isUnlocked = progressVM.totalPoints >= (level - 1) * 10
 
         ZStack {
-            // زر غير ظاهر يفتح فقط إذا unlocked
             Button(action: {
                 if isUnlocked {
                     selectedScenario = scenarios.first(where: { $0.level == level })
@@ -93,7 +103,6 @@ struct TextSenarioView: View {
             }
             .disabled(!isUnlocked)
 
-            // قفل مع تغبيش إذا مقفول
             if !isUnlocked {
                 Circle()
                     .fill(Color.black.opacity(0.3))
@@ -106,6 +115,7 @@ struct TextSenarioView: View {
             }
         }
         .position(x: x, y: y)
+        .id(level == 1 ? "level1" : nil)
     }
 
     func getImageHeight(forWidth width: CGFloat) -> CGFloat {
@@ -113,11 +123,4 @@ struct TextSenarioView: View {
         let aspectRatio = uiImage.size.height / uiImage.size.width
         return width * aspectRatio
     }
-    
-    func arabicNumber(_ num: Int) -> String {
-        let formatter = NumberFormatter()
-        formatter.locale = Locale(identifier: "ar")
-        return formatter.string(from: NSNumber(value: num)) ?? "\(num)"
-    }
-
 }
