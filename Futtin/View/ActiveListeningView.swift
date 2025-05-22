@@ -9,7 +9,7 @@ struct ActiveListeningView: View {
     var onTabSelected: (BottomNavTab) -> Void
 
     @Binding var showTabBar: Bool
-    @State private var completedLevels: [Int] = [1]
+    @State private var completedLevels: [Int] = []
 
     var body: some View {
         NavigationStack {
@@ -30,24 +30,21 @@ struct ActiveListeningView: View {
                                             Image(completedLevels.contains(level) ? "circlelevel" : "greylevel")
                                                 .resizable()
                                                 .frame(width: 80, height: 80)
-                                                
-                                                        .overlay(
-                                                            Text(arabicNumber(level))
-                                                                .foregroundColor(completedLevels.contains(level) ? Color(hex: "#328BB1") : Color(hex: "#B5B0B0"))
-                                                                .font(.custom("Geeza Pro", size: 42).weight(.bold))
+                                                .overlay(
+                                                    Text(arabicNumber(level))
+                                                        .foregroundColor((completedLevels.contains(level) || level == nextAvailableLevel) ? Color(hex: "#328BB1") : Color(hex: "#B5B0B0"))
 
-                                                        )
-
-                                                
+                                                        .font(.custom("Geeza Pro", size: 42).weight(.bold))
+                                                )
                                         }
                                         .disabled(!canAccess(level: level))
                                         .id(level)
 
                                         if level != 1 {
-                                            Image(lineImageName(for: level))
+                                            Image(lineImageName(for: level - 1))
                                                 .resizable()
                                                 .frame(width: 6, height: 28)
-                                            Image(lineImageName(for: level))
+                                            Image(lineImageName(for: level - 1))
                                                 .resizable()
                                                 .frame(width: 6, height: 28)
                                         }
@@ -76,9 +73,7 @@ struct ActiveListeningView: View {
                             },
                             showTabBar: $showTabBar,
                             progressVM: progressVM
-                           
                         )
-
                     },
                     isActive: Binding<Bool>(
                         get: { selectedScenario != nil },
@@ -93,12 +88,23 @@ struct ActiveListeningView: View {
         }
     }
 
-    func canAccess(level: Int) -> Bool {
-        completedLevels.contains(level) || level == nextAvailableLevel()
+    // ✅ المرحلة الحالية المكتملة
+    var currentLevel: Int {
+        completedLevels.max() ?? 0
     }
 
-    func nextAvailableLevel() -> Int {
-        (completedLevels.max() ?? 0) + 1
+    // ✅ المرحلة الجاية المسموح بها
+    var nextAvailableLevel: Int {
+        currentLevel + 1
+    }
+
+    // ✅ الشروط
+    func canAccess(level: Int) -> Bool {
+        return level == 1 || level <= nextAvailableLevel
+    }
+
+    func lineImageName(for level: Int) -> String {
+        return completedLevels.contains(level) ? "bluelevel" : "soundlevel"
     }
 
     func markLevelAsCompleted(level: Int) {
@@ -107,12 +113,6 @@ struct ActiveListeningView: View {
             completedLevels = completedLevels.sorted()
         }
     }
-
-    func lineImageName(for level: Int) -> String {
-        let next = level - 1
-        return completedLevels.contains(next) ? "bluelevel" : "soundlevel"
-    }
-
 
     func arabicNumber(_ num: Int) -> String {
         let englishToArabic = ["0":"٠", "1":"١", "2":"٢", "3":"٣", "4":"٤",
@@ -127,5 +127,4 @@ struct ActiveListeningView: View {
 
         return arabicStr
     }
-
 }
