@@ -2,6 +2,10 @@ import SwiftUI
 
 struct ProgressViewScreen: View {
     @ObservedObject var progressVM: ProgressViewModel
+    @Binding var showTabBar: Bool
+
+    var currentTab: BottomNavTab
+    var onTabSelected: (BottomNavTab) -> Void
 
     let voiceColor = Color(red: 50/255, green: 139/255, blue: 177/255)
     let workColor = Color(red: 251/255, green: 185/255, blue: 45/255)
@@ -84,7 +88,7 @@ struct ProgressViewScreen: View {
                         .foregroundColor(.white)
                     }
                     .padding()
-                    .background(voiceColor.opacity(0.85)) // ✅ كان 3 بالغلط!
+                    .background(voiceColor.opacity(0.85))
                     .cornerRadius(14)
                     .frame(maxWidth: 300)
                 }
@@ -94,16 +98,14 @@ struct ProgressViewScreen: View {
             .padding(.top, 60)
             .padding(.horizontal)
 
-            // ✅ هنا نرجّع الـ BottomNavBar
-            BottomNavBar(currentTab: .award, progressVM: progressVM)
-                .ignoresSafeArea(.keyboard, edges: .bottom)
-                .navigationBarBackButtonHidden(true)
+            // ✅ BottomNavBar مع المتغيرات
+            BottomNavBar(
+                currentTab: currentTab,
+                progressVM: progressVM,
+                onTabSelected: onTabSelected
+            )
+            .ignoresSafeArea(.keyboard, edges: .bottom)
+            .navigationBarBackButtonHidden(true)
         }
-    }
-}
-
-struct ProgressViewScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        ProgressViewScreen(progressVM: ProgressViewModel())
     }
 }

@@ -1,9 +1,3 @@
-//
-//  BottomNavBar.swift
-//  Fatten
-//
-//  Created by layan alwasaidi on 11/05/2025.
-//
 import SwiftUI
 
 enum BottomNavTab {
@@ -14,51 +8,53 @@ enum BottomNavTab {
 
 struct BottomNavBar: View {
     var currentTab: BottomNavTab
-    @ObservedObject var progressVM: ProgressViewModel  // ✅
-    var body: some View {
-        VStack {
-            Spacer()
+    @ObservedObject var progressVM: ProgressViewModel
+    var onTabSelected: (BottomNavTab) -> Void
 
+    var body: some View {
+        VStack(spacing: 0) {
             HStack {
                 // زر الجوائز
-                NavigationLink(destination: ProgressViewScreen(progressVM: progressVM).navigationBarBackButtonHidden(true)) {
+                Button(action: {
+                    onTabSelected(.award)
+                }) {
                     Image(systemName: "rosette")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 28, height: 28)
-                        .foregroundColor(currentTab == .award ? .blue : Color("TextBar"))
+                        .foregroundColor(currentTab == .award ? Color(hex: "4EB9E6") : Color("TextBar"))
                 }
-
+                
                 Spacer()
-
+                
                 // زر الخريطة
-                NavigationLink(destination: TextSenarioView().navigationBarBackButtonHidden(true)) {
+                Button(action: {
+                    onTabSelected(.map)
+                }) {
                     Image(systemName: "map")
                         .resizable()
-                        .scaledToFit()
+                       // .scaledToFit()
                         .frame(width: 28, height: 28)
-                        .foregroundColor(currentTab == .map ? .blue : Color("TextBar"))
+                        .foregroundColor(currentTab == .map ? Color(hex: "4EB9E6") : Color("TextBar"))
                 }
-
+                
                 Spacer()
-
-                //زر الصوت مفروض يتغير
-                NavigationLink(destination: ActiveListeningView().navigationBarBackButtonHidden(true)) {
+                
+                // زر الاستماع
+                Button(action: {
+                    onTabSelected(.customize)
+                }) {
                     Image(systemName: "headphones")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 28, height: 28)
-                        .foregroundColor(currentTab == .customize ? .blue : Color("TextBar"))
+                        .foregroundColor(currentTab == .customize ? Color(hex: "4EB9E6") : Color("TextBar"))
                 }
             }
             .padding(.horizontal, 40)
             .padding(.vertical, 12)
-            .frame(maxWidth: .infinity)
-
+           // .frame(maxWidth: .infinity) // ✅ هذا يمدد البار
             .background(Color("TabBar"))
-
-            .background(Color("TabBar"))  
-            .cornerRadius(0)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .frame(maxHeight: .infinity, alignment: .bottom)

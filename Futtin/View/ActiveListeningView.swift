@@ -1,13 +1,14 @@
-
-
-
 import SwiftUI
 
 struct ActiveListeningView: View {
     @StateObject private var viewModel = ScenarioViewModel()
     @State private var selectedScenario: Scenario? = nil
-    @StateObject private var progressVM = ProgressViewModel()
+    @ObservedObject var progressVM: ProgressViewModel
 
+    var currentTab: BottomNavTab
+    var onTabSelected: (BottomNavTab) -> Void
+
+    @Binding var showTabBar: Bool
     @State private var completedLevels: [Int] = [1]
 
     var body: some View {
@@ -15,63 +16,69 @@ struct ActiveListeningView: View {
             ZStack(alignment: .bottom) {
                 Color("Background").ignoresSafeArea()
 
-                ScrollViewReader { scrollProxy in
-                    ScrollView(.vertical) {
-                        VStack(spacing: 6) {
-                            ForEach((1...10).reversed(), id: \.self) { level in
-                                VStack(spacing: 10) {
-                                    Button(action: {
-                                        if let scenario = viewModel.scenario(for: level) {
-                                            selectedScenario = scenario
-                                        }
-                                    }) {
-                                        Image(completedLevels.contains(level) ? "circlelevel" : "greylevel")
-                                            .resizable()
-                                            .frame(width: 80, height: 80)
-                                            .overlay(
-                                                Text(arabicNumber(level))
-                                                    .foregroundColor(.white)
-                                                    .font(.system(size: 40, weight: .bold))
-                                            )
-                                    }
-                                    .disabled(!canAccess(level: level))
-                                    .id(level)
+                VStack(spacing: 0) {
+                    ScrollViewReader { scrollProxy in
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack(spacing: 6) {
+                                ForEach((1...10).reversed(), id: \.self) { level in
+                                    VStack(spacing: 10) {
+                                        Button(action: {
+                                            if let scenario = viewModel.scenario(for: level) {
+                                                selectedScenario = scenario
+                                            }
+                                        }) {
+                                            Image(completedLevels.contains(level) ? "circlelevel" : "greylevel")
+                                                .resizable()
+                                                .frame(width: 80, height: 80)
+                                                
+                                                        .overlay(
+                                                            Text(arabicNumber(level))
+                                                                .foregroundColor(completedLevels.contains(level) ? Color(hex: "#328BB1") : Color(hex: "#B5B0B0"))
+                                                                .font(.custom("Geeza Pro", size: 36).weight(.bold))
 
-                                    if level != 1 {
-                                        Image(lineImageName(for: level))
-                                            .resizable()
-                                            .frame(width: 6, height: 28)
-                                        Image(lineImageName(for: level))
-                                            .resizable()
-                                            .frame(width: 6, height: 28)
-                                    } else if level == 1 {
-                                        // بدون خطوط تحت 1
-                                        EmptyView()
+                                                        )
+
+                                                
+                                        }
+                                        .disabled(!canAccess(level: level))
+                                        .id(level)
+
+                                        if level != 1 {
+                                            Image(lineImageName(for: level))
+                                                .resizable()
+                                                .frame(width: 6, height: 28)
+                                            Image(lineImageName(for: level))
+                                                .resizable()
+                                                .frame(width: 6, height: 28)
+                                        }
                                     }
                                 }
-                            }
 
-                            Spacer(minLength: 100)
+                                Spacer(minLength: 100)
+                            }
+                            .padding(.bottom, 30)
+                            .frame(maxWidth: .infinity)
                         }
-                        .padding(.bottom, 30)
-                        .frame(maxWidth: .infinity)
-                    }
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            scrollProxy.scrollTo(1, anchor: .center)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                scrollProxy.scrollTo(1, anchor: .center)
+                            }
                         }
                     }
                 }
 
                 NavigationLink(
-                    destination: Group {
-                        if let scenario = selectedScenario {
-                            ListeningLevelView(scenario: scenario, onComplete: {
+                    destination: selectedScenario.map { scenario in
+                        ListeningLevelView(
+                            scenario: scenario,
+                            onComplete: {
                                 markLevelAsCompleted(level: scenario.level)
-                            })
-                        } else {
-                            EmptyView()
-                        }
+                            },
+                            showTabBar: $showTabBar,
+                            progressVM: progressVM
+                           
+                        )
+
                     },
                     isActive: Binding<Bool>(
                         get: { selectedScenario != nil },
@@ -80,8 +87,6 @@ struct ActiveListeningView: View {
                 ) {
                     EmptyView()
                 }
-
-                BottomNavBar(currentTab: .customize, progressVM: progressVM)
             }
             .navigationBarBackButtonHidden(true)
             .ignoresSafeArea(.keyboard, edges: .bottom)
@@ -104,12 +109,23 @@ struct ActiveListeningView: View {
     }
 
     func lineImageName(for level: Int) -> String {
-        completedLevels.contains(level) ? "bluelevel" : "soundlevel"
+        let next = level - 1
+        return completedLevels.contains(next) ? "bluelevel" : "soundlevel"
     }
 
+
     func arabicNumber(_ num: Int) -> String {
-        let formatter = NumberFormatter()
-        formatter.locale = Locale(identifier: "ar")
-        return formatter.string(from: NSNumber(value: num)) ?? "\(num)"
+        let englishToArabic = ["0":"٠", "1":"١", "2":"٢", "3":"٣", "4":"٤",
+                               "5":"٥", "6":"٦", "7":"٧", "8":"٨", "9":"٩"]
+
+        let numberStr = String(num)
+        var arabicStr = ""
+
+        for char in numberStr {
+            arabicStr.append(englishToArabic[String(char)] ?? String(char))
+        }
+
+        return arabicStr
     }
+
 }

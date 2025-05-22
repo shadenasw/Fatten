@@ -4,9 +4,10 @@ import AVFoundation
 struct ListeningLevelView: View {
     let scenario: Scenario
     var onComplete: (() -> Void)? = nil
+    @Binding var showTabBar: Bool
 
     @Environment(\.presentationMode) var presentationMode
-
+    @ObservedObject var progressVM: ProgressViewModel
     @State private var isPlaying = false
     @State private var showChoices = false
     @State private var audioPlayer: AVAudioPlayer?
@@ -15,9 +16,11 @@ struct ListeningLevelView: View {
     @State private var userHasChosen = false
 
     @State private var feedbackText: String? = nil
+    @State private var audioClosed = false
 
     @State private var activeBanner: BannerType? = nil
     @State private var bannerPlayer: AVAudioPlayer?
+    @State private var timeoutWorkItem: DispatchWorkItem?
 
 
     var body: some View {
@@ -29,7 +32,7 @@ struct ListeningLevelView: View {
                     Button(action: {
                         stopAudio()
                         presentationMode.wrappedValue.dismiss()
-                        onComplete?()
+                        
                     }) {
                         Image(systemName: "chevron.backward")
                             .foregroundColor(.white)
@@ -55,8 +58,10 @@ struct ListeningLevelView: View {
                 Spacer()
                     .frame(height: 80)
 
-                Button(action: toggleAudio) {
-                    Image(isPlaying ? "Open 1" : "replay")
+                Button(action: {
+                    toggleAudio()
+                }) {
+                    Image(audioClosed ? "closed" : (isPlaying ? "Open 1" : "replay"))
                         .resizable()
                         .frame(width: 180, height: 180)
                         .padding()
@@ -82,7 +87,18 @@ struct ListeningLevelView: View {
                                 if let audio = item.narratorAudio {
                                     playBranchAudio(named: audio)
                                 }
-                            }) {
+
+                                // ✅ توزيع النقاط حسب نوع الفيدباك
+                                switch item.feedbackType {
+                                case .correct:
+                                    progressVM.addPoints(10)
+                                case .neutral:
+                                    progressVM.addPoints(5)
+                                case .incorrect:
+                                    progressVM.addPoints(1)
+                                }
+                            })
+ {
                                 ZStack {
                                     Image("Option listen")
                                         .resizable()
@@ -157,13 +173,19 @@ struct ListeningLevelView: View {
                         .frame(width: 300, height: 300)
                         .clipped()
 
-                        Button(action: {
-                            userHasChosen = false
-                            feedbackText = nil
-                            presentationMode.wrappedValue.dismiss()
-                            onComplete?()
+                      
+                                Button(action: {
+                                    // ✅ استدعاء onComplete فقط بعد ما يشوف الفيدباك ويضغط X
+                                    onComplete?()
+                                    userHasChosen = false
+                                    feedbackText = nil
+                                    presentationMode.wrappedValue.dismiss()
+                           
+
+                         
+
                         }) {
-                            Image(systemName: "xmark")
+                        Image(systemName: "xmark")
                                 .font(.system(size: 24))
                                 .foregroundColor(.black)
                                 .padding(10)
@@ -192,16 +214,30 @@ struct ListeningLevelView: View {
             .animation(.easeInOut(duration: 0.3), value: activeBanner)
             .zIndex(2)
         }
-        .onAppear(perform: playMainAudio)
-        .onDisappear(perform: stopAudio)
+        .onAppear {
+            playMainAudio()
+            showTabBar = false // ❌ يخفي التاب بار
+        }
+        .onDisappear {
+            stopAudio()
+            showTabBar = true // ✅ يرجع التاب بار عند الرجوع
+        }
+
     }
 
     func toggleAudio() {
-        isPlaying ? stopAudio() : playMainAudio()
+        if isPlaying {
+            stopAudio()
+            audioClosed = true  // ✅ غيّر صورة الزر
+        } else {
+            playMainAudio()
+            audioClosed = false
+        }
     }
 
+
     func playMainAudio() {
-        stopAudio() // تأكد نوقف أي صوت سابق
+        stopAudio() // أوقف كل شيء أول
 
         playAudio(named: scenario.mainAudio)
 
@@ -211,31 +247,33 @@ struct ListeningLevelView: View {
         feedbackText = nil
         activeBanner = nil
 
-        // نوقف التايمر القديم (لو موجود)
         audioTimer?.invalidate()
 
-        // نراقب وقت الصوت للتصرف وقت المقاطعة (اختياري)
         audioTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
             guard let current = audioPlayer?.currentTime else { return }
 
-            // إلغاء التايمر مباشرة لو قاطع
             if userInterrupted {
                 audioTimer?.invalidate()
             }
         }
 
-        // 🔁 حساب مدة الصوت + التأخير بعده
+        // ✅ ألغِ أي تايم أوت سابق
+        timeoutWorkItem?.cancel()
+
+        // ✅ احسب المدة الإجمالية وانتظر بعدها 5 ثواني
         let totalDuration = audioPlayer?.duration ?? 0
         let delayAfterEnd: TimeInterval = 5.0
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + totalDuration + delayAfterEnd) {
-            // ما قاطع، ما اختار، وما ظهرت خيارات؟ اعرض timeout
+        let workItem = DispatchWorkItem {
             if !userInterrupted && !showChoices && !userHasChosen {
                 triggerTimeout()
             }
         }
-    }
 
+        timeoutWorkItem = workItem
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + totalDuration + delayAfterEnd, execute: workItem)
+    }
 
 
     func playAudio(named name: String) {
@@ -258,14 +296,10 @@ struct ListeningLevelView: View {
     }
 
     func stopAudio() {
-        // ✅ لو المستخدم قاطع بنجاح، لا توقف الصوت مباشرة
-        if userInterrupted {
-            audioTimer?.invalidate()
-        } else {
-            audioPlayer?.stop()
-            audioTimer?.invalidate()
-            isPlaying = false
-        }
+        audioPlayer?.stop()
+        audioTimer?.invalidate()
+        timeoutWorkItem?.cancel() // ✅ لازم ينلغي دائمًا
+        isPlaying = false
     }
 
 
@@ -287,11 +321,9 @@ struct ListeningLevelView: View {
             playSound(named: "success_ping")
             triggerHapticFeedback()
             showBanner(type: .success)
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 stopAudio()
                 showChoices = true
-            }
+            
        
 
         } else {

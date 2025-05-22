@@ -7,7 +7,8 @@ import SwiftUI
 struct FuttinApp: App {
     var body: some Scene {
         WindowGroup {
-            TextSenarioView()
+            MainTabContainer()
+
         }
     }
 }
