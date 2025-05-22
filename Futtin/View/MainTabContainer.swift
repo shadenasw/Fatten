@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainTabContainer: View {
-    @State private var currentTab: BottomNavTab = .award
+    @State private var currentTab: BottomNavTab = .map
     @StateObject private var progressVM = ProgressViewModel()
     @State private var showTabBar: Bool = true
 
@@ -9,6 +9,14 @@ struct MainTabContainer: View {
         ZStack(alignment: .bottom) {
             Group {
                 switch currentTab {
+                case .map:
+                    TextSenarioView(
+                        progressVM: progressVM,
+                        showTabBar: $showTabBar,
+                        currentTab: currentTab,
+                        onTabSelected: { tab in currentTab = tab }
+                       
+                    )
                 case .award:
                     ProgressViewScreen(
                         progressVM: progressVM,
@@ -17,13 +25,7 @@ struct MainTabContainer: View {
                         onTabSelected: { tab in currentTab = tab }
                     )
 
-                case .map:
-                    TextSenarioView(
-                        progressVM: progressVM,
-                        currentTab: currentTab,
-                        onTabSelected: { tab in currentTab = tab }
-                    
-                    )
+               
                 case .customize:
                     ActiveListeningView(
                         progressVM: progressVM,

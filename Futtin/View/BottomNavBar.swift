@@ -21,7 +21,7 @@ struct BottomNavBar: View {
                     Image(systemName: "rosette")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 28, height: 28)
+                        .frame(width: 25, height: 25)
                         .foregroundColor(currentTab == .award ? Color(hex: "4EB9E6") : Color("TextBar"))
                 }
                 
@@ -34,7 +34,7 @@ struct BottomNavBar: View {
                     Image(systemName: "map")
                         .resizable()
                        // .scaledToFit()
-                        .frame(width: 28, height: 28)
+                        .frame(width: 25, height: 25)
                         .foregroundColor(currentTab == .map ? Color(hex: "4EB9E6") : Color("TextBar"))
                 }
                 
@@ -47,13 +47,13 @@ struct BottomNavBar: View {
                     Image(systemName: "headphones")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 28, height: 28)
+                        .frame(width: 25, height: 25)
                         .foregroundColor(currentTab == .customize ? Color(hex: "4EB9E6") : Color("TextBar"))
                 }
             }
             .padding(.horizontal, 40)
             .padding(.vertical, 12)
-           // .frame(maxWidth: .infinity) // ✅ هذا يمدد البار
+            //.frame(maxWidth: .infinity) // ✅ هذا يمدد البار
             .background(Color("TabBar"))
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)

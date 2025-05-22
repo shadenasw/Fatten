@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct TextSenarioView: View {
-    @State private var selectedScenario: TextScenarios? = nil
     @ObservedObject var progressVM: ProgressViewModel
+    @Binding var showTabBar: Bool
 
     var currentTab: BottomNavTab
     var onTabSelected: (BottomNavTab) -> Void
@@ -13,7 +13,7 @@ struct TextSenarioView: View {
                 // 🔹 الخلفية
                 Color("Background").ignoresSafeArea()
 
-                // 🔹 الصورة والمحتوى
+                // 🔹 السيناريوهات
                 GeometryReader { geo in
                     ScrollViewReader { proxy in
                         ScrollView(.vertical, showsIndicators: false) {
@@ -26,7 +26,6 @@ struct TextSenarioView: View {
                                     .scaledToFit()
                                     .frame(width: imageWidth, height: imageHeight)
 
-                                // ✅ أزرار المراحل
                                 ForEach(1...10, id: \.self) { level in
                                     let x = level % 2 == 0 ? imageWidth * 0.3 : imageWidth * 0.7
                                     let y = imageHeight * (0.18 + 0.07 * Double(10 - level))
@@ -44,73 +43,66 @@ struct TextSenarioView: View {
                         }
                     }
                 }
+
+                // 🔹 شريط التنقل السفلي
                 VStack {
                     Spacer()
-                    // 🔹 شريط التنقل السفلي ثابت دائمًا فوق كل شيء
-                    BottomNavBar(
-                        currentTab: currentTab,
-                        progressVM: progressVM,
-                        onTabSelected: onTabSelected
-                    )
-                    .frame(height: 70)
-                    .frame(maxWidth: .infinity)
-                    .background(Color("TabBar"))
-                    .zIndex(1)
 
-            
+                    if showTabBar {
+                        BottomNavBar(
+                            currentTab: currentTab,
+                            progressVM: progressVM,
+                            onTabSelected: onTabSelected
+                        )
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 0.25), value: showTabBar)
+                        .frame(height: 70)
+                        .frame(maxWidth: .infinity)
+                        .background(Color("TabBar"))
+                        .zIndex(1)
+                    }
                 }
                 .ignoresSafeArea(.keyboard, edges: .bottom)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom) // ✅ يخلي البار يثبت تمامًا
-
-
-                // 🔹 شريط التنقل السفلي مثبت دائمًا فوق كل شيء
-              
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             }
-
-            .background(
-                NavigationLink(
-                    destination: selectedScenario.map {
-                        ScenarioLevelView(scenario: $0, progressVM: progressVM)
-                            .environment(\.layoutDirection, .rightToLeft)
-                    },
-                    isActive: Binding<Bool>(
-                        get: { selectedScenario != nil },
-                        set: { if !$0 { selectedScenario = nil } }
-                    )
-                ) {
-                    EmptyView()
-                }
-            )
             .navigationBarBackButtonHidden(true)
             .ignoresSafeArea()
         }
-
     }
 
+    // 🔹 زر كل مستوى
     @ViewBuilder
     func levelButton(level: Int, x: CGFloat, y: CGFloat) -> some View {
         let isUnlocked = progressVM.totalPoints >= (level - 1) * 10
 
         ZStack {
-            Button(action: {
-                if isUnlocked {
-                    selectedScenario = scenarios.first(where: { $0.level == level })
+            if isUnlocked {
+                NavigationLink(
+                    destination:
+                        ScenarioLevelView(
+                            scenario: scenarios.first(where: { $0.level == level })!,
+                            progressVM: progressVM,
+                            showTabBar: $showTabBar
+                        )
+                        .environment(\.layoutDirection, .rightToLeft)
+                ) {
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 80, height: 80)
                 }
-            }) {
+            } else {
                 Rectangle()
                     .foregroundColor(.clear)
                     .frame(width: 80, height: 80)
-            }
-            .disabled(!isUnlocked)
-
-            if !isUnlocked {
-                Circle()
-                    .fill(Color.black.opacity(0.3))
-                    .frame(width: 80, height: 80)
                     .overlay(
-                        Image(systemName: "lock.fill")
-                            .foregroundColor(.white)
-                            .font(.system(size: 24, weight: .bold))
+                        Circle()
+                            .fill(Color.black.opacity(0.3))
+                            .frame(width: 80, height: 80)
+                            .overlay(
+                                Image(systemName: "lock.fill")
+                                    .foregroundColor(.white)
+                                    .font(.system(size: 24, weight: .bold))
+                            )
                     )
             }
         }

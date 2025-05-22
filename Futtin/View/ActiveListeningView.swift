@@ -34,7 +34,7 @@ struct ActiveListeningView: View {
                                                         .overlay(
                                                             Text(arabicNumber(level))
                                                                 .foregroundColor(completedLevels.contains(level) ? Color(hex: "#328BB1") : Color(hex: "#B5B0B0"))
-                                                                .font(.custom("Geeza Pro", size: 36).weight(.bold))
+                                                                .font(.custom("Geeza Pro", size: 42).weight(.bold))
 
                                                         )
 
