@@ -31,7 +31,7 @@ struct BannerView: View {
             Spacer()
         }
         .padding()
-        .background(Color(hex: "#2C2E2C").opacity(0.8))
+        .background(Color("BackgroundOverlay").opacity(0.8))
         .cornerRadius(20)
         .shadow(radius: 5)
         .padding(.horizontal)

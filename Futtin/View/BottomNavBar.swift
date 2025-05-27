@@ -22,7 +22,7 @@ struct BottomNavBar: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 25, height: 25)
-                        .foregroundColor(currentTab == .award ? Color(hex: "4EB9E6") : Color("TextBar"))
+                        .foregroundColor(currentTab == .award ? Color("AwardBlue") : Color("TextBar"))
                 }
                 
                 Spacer()
@@ -35,7 +35,7 @@ struct BottomNavBar: View {
                         .resizable()
                        // .scaledToFit()
                         .frame(width: 25, height: 25)
-                        .foregroundColor(currentTab == .map ? Color(hex: "4EB9E6") : Color("TextBar"))
+                        .foregroundColor(currentTab == .map ? Color("AwardBlue") : Color("TextBar"))
                 }
                 
                 Spacer()
@@ -48,7 +48,7 @@ struct BottomNavBar: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 25, height: 25)
-                        .foregroundColor(currentTab == .customize ? Color(hex: "4EB9E6") : Color("TextBar"))
+                        .foregroundColor(currentTab == .customize ? Color("AwardBlue") : Color("TextBar"))
                 }
             }
             .padding(.horizontal, 40)

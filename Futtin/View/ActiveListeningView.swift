@@ -32,7 +32,12 @@ struct ActiveListeningView: View {
                                                 .frame(width: 80, height: 80)
                                                 .overlay(
                                                     Text(arabicNumber(level))
-                                                        .foregroundColor((completedLevels.contains(level) || level == nextAvailableLevel) ? Color(hex: "#328BB1") : Color(hex: "#B5B0B0"))
+                                                        .foregroundColor(
+                                                            (completedLevels.contains(level) || level == nextAvailableLevel) ?
+                                                            Color("LevelAvailable") :
+                                                            Color("LevelUnavailable")
+                                                        )
+
 
                                                         .font(.custom("Geeza Pro", size: 42).weight(.bold))
                                                 )

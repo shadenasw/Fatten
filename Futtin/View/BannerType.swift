@@ -47,11 +47,11 @@ enum BannerType {
     var circleColor: Color {
         switch self {
         case .success:
-            return Color(hex: "#3C9949") // أخضر
+            return Color("SuccessGreen")
         case .fail:
-            return Color(hex: "#DE3B3B") // أحمر
+            return Color("reddd")
         case .timeout:
-            return Color(hex: "#F9BE22") // أصفر
+            return Color("yelloww")
         }
     }
 
