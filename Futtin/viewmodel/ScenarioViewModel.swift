@@ -13,12 +13,12 @@ class ScenarioViewModel: ObservableObject {
             interruptionRange: 25.0...29.0,
             branches: [
                
-                ScenarioBranch(userOption: "لا تسمع له، مدراؤنا دايم ينتقدون.", narratorAudio: nil,
+                ScenarioBranch(userOption: "لا تسمع له، مدراؤنا دائما ينتقدون.", narratorAudio: nil,
                                feedback: "يدعم الدفاعية يغلق باب التطوير", feedbackType: .incorrect),
                 ScenarioBranch(userOption: "يمكن طريقته كانت قاسية، بس فيها فرصة للتطور.", narratorAudio: nil,
                                feedback: " يُظهر توازن بين الاحتواء والتوجيه", feedbackType: .correct),
-                ScenarioBranch(userOption: "عادي، كلنا ننهان أحيان.", narratorAudio: nil,
-                               feedback: "يطبع الإهانة وقد يضعف الوعي بالحقوق.", feedbackType: .neutral)
+                ScenarioBranch(userOption: "من الطبيعي ان نمر بهذه العقبات دائما، لذلك تقبلها", narratorAudio: nil,
+                               feedback: "يطبع النقد الجارح كشيء طبيعي.", feedbackType: .neutral)
             ]
             ),
       
