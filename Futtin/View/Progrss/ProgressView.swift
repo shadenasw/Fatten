@@ -2,10 +2,6 @@ import SwiftUI
 
 struct ProgressViewScreen: View {
     @ObservedObject var progressVM: ProgressViewModel
-    @Binding var showTabBar: Bool
-
-    var currentTab: BottomNavTab
-    var onTabSelected: (BottomNavTab) -> Void
 
     let voiceColor = Color(red: 50/255, green: 139/255, blue: 177/255)
     let workColor = Color(red: 251/255, green: 185/255, blue: 45/255)
@@ -97,15 +93,7 @@ struct ProgressViewScreen: View {
             }
             .padding(.top, 60)
             .padding(.horizontal)
-
-            // ✅ BottomNavBar مع المتغيرات
-            BottomNavBar(
-                currentTab: currentTab,
-                progressVM: progressVM,
-                onTabSelected: onTabSelected
-            )
-            .ignoresSafeArea(.keyboard, edges: .bottom)
-            .navigationBarBackButtonHidden(true)
         }
+        .navigationBarBackButtonHidden(true)
     }
 }

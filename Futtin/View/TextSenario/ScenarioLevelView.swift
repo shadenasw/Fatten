@@ -4,12 +4,12 @@
 //
 //  Created by shaden  on 10/11/1446 AH.
 //
+
 import SwiftUI
 
 struct ScenarioLevelView: View {
     let scenario: TextScenarios
     @ObservedObject var progressVM: ProgressViewModel  // ✅ أضفناها
-    @Binding var showTabBar: Bool
 
     @State private var selectedChoiceIndex: Int? = nil
     @State private var showFeedback = false
@@ -86,13 +86,6 @@ struct ScenarioLevelView: View {
                 }
             }
         )
-        .onAppear {
-            showTabBar = false
-        }
-        .onDisappear {
-            showTabBar = true
-        }
-
     }
 
     var feedbackOverlay: some View {
@@ -215,3 +208,8 @@ struct FixedOptionButton: View {
     }
 }
 
+// ✅ Preview تم تحديثه لتمرير progressVM
+#Preview {
+    ScenarioLevelView(scenario: scenarios[0], progressVM: ProgressViewModel())
+        .environment(\.layoutDirection, .rightToLeft)
+}

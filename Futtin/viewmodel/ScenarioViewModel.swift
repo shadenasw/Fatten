@@ -3,7 +3,7 @@ import Foundation
 
 
 class ScenarioViewModel: ObservableObject {
-    @Published var scenarios: [Scenario] = [
+    @Published var audioScenarios: [Scenario] = [
 
         // -------------------- المستوى 1 --------------------
         Scenario(
@@ -40,7 +40,7 @@ class ScenarioViewModel: ObservableObject {
         // -------------------- المستوى 3 --------------------
      
         Scenario(
-                level: 1,
+                level: 3,
                 title: "التكيّف مع التغيير",
                 mainAudio: "change_ahmad",
                 interruptionRange: 29.0...31.0,
@@ -179,6 +179,6 @@ class ScenarioViewModel: ObservableObject {
     ]
 
     func scenario(for level: Int) -> Scenario? {
-        scenarios.first { $0.level == level }
+        audioScenarios.first { $0.level == level }
     }
 }

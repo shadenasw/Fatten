@@ -2,18 +2,22 @@ import SwiftUI
 
 struct TextSenarioView: View {
     @ObservedObject var progressVM: ProgressViewModel
-    @Binding var showTabBar: Bool
+    @State private var showScenarioSheet = false
+    @State private var selectedLevel: Int? = nil
+    @State private var selectedScenarioType: ScenarioType? = nil
+    @State private var navigateToScenario = false
+    @ObservedObject var scenarioVM: ScenarioViewModel
 
-    var currentTab: BottomNavTab
-    var onTabSelected: (BottomNavTab) -> Void
+
+    enum ScenarioType {
+        case text, audio
+    }
 
     var body: some View {
         NavigationStack {
             ZStack {
-                // 🔹 الخلفية
                 Color("Background").ignoresSafeArea()
 
-                // 🔹 السيناريوهات
                 GeometryReader { geo in
                     ScrollViewReader { proxy in
                         ScrollView(.vertical, showsIndicators: false) {
@@ -31,7 +35,6 @@ struct TextSenarioView: View {
                                     let y = imageHeight * (0.18 + 0.07 * Double(10 - level))
                                     levelButton(level: level, x: x, y: y)
                                 }
-                                .padding(.bottom, 70)
                             }
                             .frame(width: imageWidth, height: imageHeight)
                         }
@@ -44,48 +47,72 @@ struct TextSenarioView: View {
                     }
                 }
 
-                // 🔹 شريط التنقل السفلي
-                VStack {
-                    Spacer()
-
-                    if showTabBar {
-                        BottomNavBar(
-                            currentTab: currentTab,
-                            progressVM: progressVM,
-                            onTabSelected: onTabSelected
-                        )
-                        .transition(.opacity)
-                        .animation(.easeInOut(duration: 0.25), value: showTabBar)
-                        .frame(height: 70)
-                        .frame(maxWidth: .infinity)
-                        .background(Color("TabBar"))
-                        .zIndex(1)
-                    }
-                }
-                .ignoresSafeArea(.keyboard, edges: .bottom)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                NavigationLink(
+                    destination: destinationView(),
+                    isActive: $navigateToScenario,
+                    label: { EmptyView() }
+                )
             }
             .navigationBarBackButtonHidden(true)
-            .ignoresSafeArea()
+            .sheet(isPresented: $showScenarioSheet) {
+                ScenarioSelectionSheet(
+                    onSelectText: {
+                        selectedScenarioType = .text
+                        showScenarioSheet = false
+                        navigateToScenario = true
+                    },
+                    onSelectAudio: {
+                        selectedScenarioType = .audio
+                        showScenarioSheet = false
+                        navigateToScenario = true
+                    }
+                )
+                .presentationDetents([.height(220)])
+            }
         }
     }
 
-    // 🔹 زر كل مستوى
+    @ViewBuilder
+    func destinationView() -> some View {
+        if let level = selectedLevel, let scenarioType = selectedScenarioType {
+            switch scenarioType {
+            case .text:
+                if let scenario = scenarios.first(where: { $0.level == level }) {
+                    ScenarioLevelView(scenario: scenario, progressVM: progressVM)
+                        .environment(\.layoutDirection, .rightToLeft)
+                } else {
+                    Text("السيناريو النصي غير موجود")
+                }
+
+            case .audio:
+                if let scenario = scenarioVM.audioScenarios.first(where: { $0.level == level }) {
+
+                    ListeningLevelView(
+                        scenario: scenario,
+                        onComplete: { },
+                        showTabBar: .constant(false),
+                        progressVM: progressVM
+                    )
+                } else {
+                    Text("السيناريو الصوتي غير موجود")
+                }
+            }
+        } else {
+            EmptyView()
+        }
+    }
+
+
     @ViewBuilder
     func levelButton(level: Int, x: CGFloat, y: CGFloat) -> some View {
         let isUnlocked = progressVM.totalPoints >= (level - 1) * 10
 
         ZStack {
             if isUnlocked {
-                NavigationLink(
-                    destination:
-                        ScenarioLevelView(
-                            scenario: scenarios.first(where: { $0.level == level })!,
-                            progressVM: progressVM,
-                            showTabBar: $showTabBar
-                        )
-                        .environment(\.layoutDirection, .rightToLeft)
-                ) {
+                Button {
+                    selectedLevel = level
+                    showScenarioSheet = true
+                } label: {
                     Rectangle()
                         .foregroundColor(.clear)
                         .frame(width: 80, height: 80)

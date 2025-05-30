@@ -5,8 +5,6 @@ struct ActiveListeningView: View {
     @State private var selectedScenario: Scenario? = nil
     @ObservedObject var progressVM: ProgressViewModel
 
-    var currentTab: BottomNavTab
-    var onTabSelected: (BottomNavTab) -> Void
 
     @Binding var showTabBar: Bool
     @State private var completedLevels: [Int] = []
