@@ -30,6 +30,7 @@ struct ScenarioLevelView: View {
                     .resizable()
                     .scaledToFit()
                 Text(scenario.description)
+                
                     .multilineTextAlignment(.center)
                     .padding(30)
             }

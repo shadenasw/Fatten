@@ -1,5 +1,6 @@
 
 
+
 import SwiftUI
 
 @main
@@ -10,6 +11,7 @@ struct FuttinApp: App {
     var body: some Scene {
         WindowGroup {
             TextSenarioView(progressVM: progressVM, scenarioVM: scenarioVM)
+                .preferredColorScheme(.light)
         }
     }
 }
