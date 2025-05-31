@@ -1,13 +1,19 @@
 import SwiftUI
+import AVFoundation
 
 struct TextSenarioView: View {
     @ObservedObject var progressVM: ProgressViewModel
+    @StateObject private var progressManager = ScenarioProgressViewModel()
+    @ObservedObject var scenarioVM: ScenarioViewModel
+
+    @State private var showFireworks = false
+    @State private var celebrationPlayer: AVAudioPlayer?
+
     @State private var showScenarioSheet = false
     @State private var selectedLevel: Int? = nil
     @State private var selectedScenarioType: ScenarioType? = nil
     @State private var navigateToScenario = false
-    @ObservedObject var scenarioVM: ScenarioViewModel
-
+    @State private var shouldDismissSheet = false
 
     enum ScenarioType {
         case text, audio
@@ -47,28 +53,91 @@ struct TextSenarioView: View {
                     }
                 }
 
+                if showFireworks {
+                    ConfettiView()
+                        .ignoresSafeArea()
+                        .transition(.scale)
+                        .zIndex(1)
+                }
+
+                
+
                 NavigationLink(
                     destination: destinationView(),
                     isActive: $navigateToScenario,
                     label: { EmptyView() }
                 )
+                .onChange(of: navigateToScenario) { isActive in
+                    if isActive {
+                        shouldDismissSheet = true
+                        showScenarioSheet = false
+                    }
+                }
             }
             .navigationBarBackButtonHidden(true)
             .sheet(isPresented: $showScenarioSheet) {
-                ScenarioSelectionSheet(
-                    onSelectText: {
-                        selectedScenarioType = .text
-                        showScenarioSheet = false
-                        navigateToScenario = true
-                    },
-                    onSelectAudio: {
-                        selectedScenarioType = .audio
-                        showScenarioSheet = false
-                        navigateToScenario = true
+                ZStack {
+                    Color("Sheet").ignoresSafeArea()
+
+                    if let level = selectedLevel {
+                        let progress = progressManager.levelProgressList.first(where: { $0.level == level })
+
+                        ScenarioSelectionSheet(
+                            level: level,
+                            didCompleteText: progress?.didCompleteText ?? false,
+                            didCompleteAudio: progress?.didCompleteAudio ?? false,
+
+                            onSelectText: {
+                                selectedScenarioType = .text
+                                navigateToScenario = true
+                            },
+
+                            onSelectAudio: {
+                                selectedScenarioType = .audio
+                                navigateToScenario = true
+                            }
+                        )
+                        .presentationDetents([.height(280)])
                     }
-                )
-                .presentationDetents([.height(220)])
+                }
             }
+            .onChange(of: navigateToScenario) { isActive in
+                if !isActive && !shouldDismissSheet {
+                    showScenarioSheet = true
+                }
+            }
+        }
+    }
+
+    func checkIfBothCompleted(for level: Int) {
+        let progress = progressManager.levelProgressList.first { $0.level == level }
+
+        if (progress?.didCompleteText ?? false) && (progress?.didCompleteAudio ?? false) {
+            let nextLevel = level + 1
+            if nextLevel <= 10 {
+                progressManager.unlockNextLevel(nextLevel)
+            }
+
+            playCelebrationSound()
+            showFireworks = true
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                showFireworks = false
+            }
+        }
+    }
+
+
+    func playCelebrationSound() {
+        if let path = Bundle.main.path(forResource: "fireworks", ofType: "mp3") {
+            do {
+                celebrationPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
+                celebrationPlayer?.play()
+            } catch {
+                print("❌ فشل تشغيل صوت الاحتفال")
+            }
+        } else {
+            print("❌ ملف fireworks.mp3 غير موجود في المشروع")
         }
     }
 
@@ -78,18 +147,27 @@ struct TextSenarioView: View {
             switch scenarioType {
             case .text:
                 if let scenario = scenarios.first(where: { $0.level == level }) {
-                    ScenarioLevelView(scenario: scenario, progressVM: progressVM)
-                        .environment(\.layoutDirection, .rightToLeft)
+                    ScenarioLevelView(scenario: scenario, progressVM: progressVM, onComplete: {
+                        progressManager.completeTextScenario(for: level)
+                        checkIfBothCompleted(for: level)
+                        navigateToScenario = false
+                        shouldDismissSheet = false
+                    })
+                    .environment(\.layoutDirection, .rightToLeft)
                 } else {
                     Text("السيناريو النصي غير موجود")
                 }
 
             case .audio:
                 if let scenario = scenarioVM.audioScenarios.first(where: { $0.level == level }) {
-
                     ListeningLevelView(
                         scenario: scenario,
-                        onComplete: { },
+                        onComplete: {
+                            progressManager.completeAudioScenario(for: level)
+                            checkIfBothCompleted(for: level)
+                            navigateToScenario = false
+                            shouldDismissSheet = false
+                        },
                         showTabBar: .constant(false),
                         progressVM: progressVM
                     )
@@ -102,16 +180,16 @@ struct TextSenarioView: View {
         }
     }
 
-
     @ViewBuilder
     func levelButton(level: Int, x: CGFloat, y: CGFloat) -> some View {
-        let isUnlocked = progressVM.totalPoints >= (level - 1) * 10
+        let isUnlocked = progressManager.isLevelUnlocked(level)
 
         ZStack {
             if isUnlocked {
                 Button {
                     selectedLevel = level
                     showScenarioSheet = true
+                    shouldDismissSheet = false
                 } label: {
                     Rectangle()
                         .foregroundColor(.clear)

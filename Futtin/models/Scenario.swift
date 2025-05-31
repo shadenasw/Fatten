@@ -20,3 +20,10 @@ enum FeedbackType {
     case neutral
     case incorrect
 }
+
+
+struct LevelProgress: Codable {
+    var level: Int
+    var didCompleteText: Bool
+    var didCompleteAudio: Bool
+}

@@ -156,11 +156,10 @@ struct ListeningLevelView: View {
 
                         VStack(spacing: 15) {
                             Spacer().frame(height: 40)
-                            Text("أحسنت!")
+                            Text(notificationTitle())
                                 .font(.title2)
                                 .bold()
                                 .foregroundColor(.black)
-                                .multilineTextAlignment(.center)
 
                             Text(feedback)
                                 .font(.system(size: 16))
@@ -174,16 +173,14 @@ struct ListeningLevelView: View {
                         .clipped()
 
                       
-                                Button(action: {
-                                    // ✅ استدعاء onComplete فقط بعد ما يشوف الفيدباك ويضغط X
-                                    onComplete?()
-                                    userHasChosen = false
-                                    feedbackText = nil
-                                    presentationMode.wrappedValue.dismiss()
-                           
-
-                         
-
+                        Button(action: {
+                            // ✅ استدعِ onComplete بعد ما المستخدم يضغط X
+                            withAnimation {
+                                feedbackText = nil
+                                userHasChosen = false
+                            }
+                            onComplete?() // ✅ هنا تنفذ بعد عرض الفيدباك
+                            presentationMode.wrappedValue.dismiss()
                         }) {
                         Image(systemName: "xmark")
                                 .font(.system(size: 24))
@@ -385,6 +382,17 @@ struct ListeningLevelView: View {
         case 1: return "ب"
         case 2: return "ج"
         default: return ""
+        }
+    }
+    func notificationTitle() -> String {
+        guard let index = scenario.branches.firstIndex(where: { $0.feedback == feedbackText }) else {
+            return "إجابة"
+        }
+
+        switch scenario.branches[index].feedbackType {
+        case .correct: return "أحسنت!"
+        case .neutral: return "إجابتك جيدة"
+        case .incorrect: return "لا بأس"
         }
     }
 

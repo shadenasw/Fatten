@@ -6,16 +6,18 @@
 //
 
 import SwiftUI
-
 struct ScenarioLevelView: View {
     let scenario: TextScenarios
-    @ObservedObject var progressVM: ProgressViewModel  // ✅ أضفناها
+    @ObservedObject var progressVM: ProgressViewModel
+
+    var onComplete: (() -> Void)? = nil // ✅ أضفنا هذا
 
     @State private var selectedChoiceIndex: Int? = nil
     @State private var showFeedback = false
     @State private var feedbackMessage = ""
 
     @Environment(\.dismiss) var dismiss
+
 
     var body: some View {
         VStack(spacing: 10) {
@@ -30,6 +32,7 @@ struct ScenarioLevelView: View {
                     .resizable()
                     .scaledToFit()
                 Text(scenario.description)
+                
                     .multilineTextAlignment(.center)
                     .padding(30)
             }
@@ -120,6 +123,8 @@ struct ScenarioLevelView: View {
 
                     Button(action: {
                         showFeedback = false
+                        onComplete?() // ✅ يستدعي الاكتمال بعد إغلاق الفيدباك
+                         dismiss()
                     }) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.system(size: 20, weight: .bold))
